@@ -45,7 +45,7 @@
 2. Modelos mockados para clientes, agenda, procedimentos e pacotes.
 3. Formularios de cliente e agendamento.
 4. Controle visual de pacotes e sessoes.
-5. Persistencia local ou banco inicial.
+5. Persistencia inicial com PostgreSQL e Prisma.
 6. Ficha de anamnese.
 7. Mensagens prontas de WhatsApp.
 8. Dashboard de comissoes e produtividade.
@@ -54,14 +54,42 @@
 
 ## Agora
 
-- Definir ou criar stack inicial do sistema.
-- Criar estrutura base do projeto.
+- Conectar a dashboard inicial a entidades tipadas de clientes, agenda, procedimentos e pacotes.
 - Modelar entidades principais: empresa, usuario, cliente, profissional, procedimento, pacote, sessao, agendamento, anamnese e pagamento.
-- Criar tela inicial operacional, sem landing page, focada no uso diario da clinica.
 - Criar cadastro de clientes.
-- Criar agenda de procedimentos.
-- Criar controle de pacotes e sessoes restantes.
+- Criar agenda de procedimentos com formularios.
+- Criar controle de pacotes e sessoes restantes com interacoes reais.
 - Criar historico de atendimentos.
+- Implementar persistencia inicial com PostgreSQL e Prisma.
+
+## Arquitetura de dados
+
+- Banco oficial: PostgreSQL.
+- ORM/migrations: Prisma.
+- Provedores recomendados para MVP: Neon Postgres ou Supabase Postgres.
+- Padrao SaaS: todas as entidades de negocio devem carregar `companyId` para multiempresa.
+- Evitar SQLite/Firebase como base principal, porque o produto tem relacoes fortes entre cliente, profissional, agenda, pacote, sessao, pagamento, anamnese e comissao.
+
+### Entidades iniciais PostgreSQL
+
+- companies: empresa contratante do sistema.
+- users: usuarios vinculados a uma empresa.
+- customers: clientes da clinica.
+- professionals: profissionais que executam procedimentos.
+- procedures: procedimentos, duracao, preco e cuidados.
+- packages: pacotes comprados pela cliente.
+- package_sessions: sessoes consumidas ou disponiveis dentro de um pacote.
+- appointments: agendamentos e status.
+- anamnesis_forms: fichas e respostas de anamnese.
+- attendances: registros de atendimento/sessao.
+- payments: pagamentos e recebimentos previstos.
+- commissions: comissoes por profissional.
+
+## Entregue no momento
+
+- Base Next.js com TypeScript, Tailwind CSS e ESLint.
+- Tela operacional inicial, sem landing page, focada no uso diario da clinica.
+- Dados mockados tipados para agenda, clientes, pacotes, retornos e WhatsApp.
 
 ## Proximas features comerciais
 
