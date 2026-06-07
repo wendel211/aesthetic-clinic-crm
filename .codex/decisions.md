@@ -10,10 +10,14 @@
 - O fluxo deve usar branches pequenas, validacoes antes de PR e commits coesos.
 - O agente nao deve acumular muitas mudancas antes de subir.
 - O repositorio GitHub base e `https://github.com/wendel211/aesthetic-clinic-crm.git`.
+- A stack inicial do produto sera Next.js 16 com TypeScript, Tailwind CSS 4 e ESLint.
+- A primeira entrega tecnica sera uma superficie operacional em vez de landing page, com dashboard, agenda, clientes, pacotes e WhatsApp.
+- O banco de dados oficial do produto sera PostgreSQL.
+- A camada de modelagem e migrations recomendada sera Prisma.
+- A arquitetura deve nascer multiempresa usando `companyId` nas entidades de negocio.
+- Para MVP, priorizar Neon Postgres ou Supabase Postgres como provedor gerenciado.
 
 ## Decisoes pendentes
 
-- Escolha da stack.
-- Modelo de banco.
 - Estrategia de autenticacao.
 - Estrategia de deploy.
