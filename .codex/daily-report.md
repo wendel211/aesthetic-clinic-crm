@@ -6,6 +6,8 @@
 
 - Configurada a memoria operacional do agente para o CRM Estetica Pro.
 - Criado backlog inicial com foco em agenda, clientes, pacotes, sessoes e WhatsApp.
+- Reforcada a estrutura do backlog com modulos, entidades, primeira jornada e ordem recomendada de desenvolvimento.
+- Criado `.codex/structure.md` como mapa de produto e arquitetura para o agente diario.
 - Definido posicionamento inicial para clinicas de estetica e studios de beleza.
 - Criadas regras de atuacao diaria em `AGENTS.md`.
 - Repositorio Git inicializado e conectado ao GitHub `wendel211/aesthetic-clinic-crm`.
