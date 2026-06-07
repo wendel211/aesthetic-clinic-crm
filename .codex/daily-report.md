@@ -8,11 +8,12 @@
 - Criado backlog inicial com foco em agenda, clientes, pacotes, sessoes e WhatsApp.
 - Definido posicionamento inicial para clinicas de estetica e studios de beleza.
 - Criadas regras de atuacao diaria em `AGENTS.md`.
+- Repositorio Git inicializado e conectado ao GitHub `wendel211/aesthetic-clinic-crm`.
+- Push inicial realizado na branch `main`.
 
 ### Validacao
 
 - Workspace inicial criado.
-- Ainda nao ha repositorio Git inicializado neste diretorio.
 - Ainda nao ha aplicacao ou testes para executar.
 
 ### Proximo ciclo

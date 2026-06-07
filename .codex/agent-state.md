@@ -15,14 +15,12 @@ Conduzir o desenvolvimento continuo deste sistema com ciclos diarios automatizad
 
 ## Estado atual
 
-Workspace inicial configurado com memoria do agente e backlog de produto.
+Workspace inicial configurado com memoria do agente, backlog de produto e repositorio GitHub conectado.
 
 Ainda pendente:
-- Inicializar ou conectar repositorio Git.
 - Definir stack tecnica.
 - Criar primeira versao funcional do sistema.
 - Configurar testes, lint e build.
-- Conectar GitHub para abertura automatica de PR.
 
 ## Preferencia atual de ciclo
 
@@ -40,6 +38,5 @@ Criar a base tecnica do CRM com uma stack web adequada para SaaS:
 
 - Stack definitiva.
 - Nome comercial final.
-- Repositorio GitHub de destino.
 - Politica de merge automatico.
 - Integracao real com WhatsApp ou apenas links/atalhos no MVP.
