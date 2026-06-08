@@ -47,6 +47,18 @@ export type WhatsAppQueueItem = {
   url: string;
 };
 
+export type PriorityItem = {
+  id: string;
+  badge: string;
+  title: string;
+  detail: string;
+  recommendation: string;
+  impact: string;
+  href: string;
+  hrefLabel: string;
+  tone: "Alta" | "Media";
+};
+
 export const navigationItems = [
   "Dashboard",
   "Agenda",
@@ -215,5 +227,64 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Reagendamento apos falta",
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
+  },
+];
+
+const pendingConfirmations = agendaItems.filter((item) => item.status === "Aguardando");
+const renewalCandidates = packageHealthItems.filter(
+  (item) => item.status === "Renovar agora",
+);
+const sameDayRenewal = renewalCandidates.find((item) =>
+  agendaItems.some((agendaItem) => agendaItem.client === item.client),
+);
+const sameDayRenewalAppointment = sameDayRenewal
+  ? agendaItems.find((item) => item.client === sameDayRenewal.client)
+  : undefined;
+const nextFollowUps = followUpItems.slice(0, 2);
+
+export const priorityItems: PriorityItem[] = [
+  {
+    id: "prio-1",
+    badge: `${pendingConfirmations.length} confirmacao pendente`,
+    title: "Destravar agenda com mensagem curta",
+    detail: pendingConfirmations[0]
+      ? `${pendingConfirmations[0].client} ainda nao confirmou o horario das ${pendingConfirmations[0].time}.`
+      : "Todas as clientes do turno ja confirmaram o horario previsto.",
+    recommendation:
+      "Envie a confirmacao agora e ofereca remarcacao rapida se nao houver resposta ate uma hora antes.",
+    impact: "Reduz falta e protege a ocupacao da agenda do dia.",
+    href: "#whatsapp",
+    hrefLabel: "Abrir fila de WhatsApp",
+    tone: "Alta",
+  },
+  {
+    id: "prio-2",
+    badge: `${renewalCandidates.length} pacote em renovacao`,
+    title: "Fechar pacote antes da ultima sessao",
+    detail:
+      sameDayRenewal && sameDayRenewalAppointment
+        ? `${sameDayRenewal.client} chega hoje para ${sameDayRenewalAppointment.procedure.toLowerCase()} com a ultima sessao ativa.`
+        : "Existe pacote em fase de renovacao e vale preparar a proposta ainda hoje.",
+    recommendation:
+      "Deixe uma oferta pronta na recepcao com opcao de upgrade ou reposicao imediata.",
+    impact: "Aumenta recorrencia e reduz perda de receita por espera.",
+    href: "#pacotes",
+    hrefLabel: "Ver pacotes em alerta",
+    tone: "Alta",
+  },
+  {
+    id: "prio-3",
+    badge: `${nextFollowUps.length} retornos aquecidos`,
+    title: "Puxar manutencoes antes de esfriar",
+    detail:
+      nextFollowUps.length > 1
+        ? `${nextFollowUps[0].client} e ${nextFollowUps[1].client} ja entram na janela ideal de contato.`
+        : "Ha retorno recomendado aguardando contato da recepcao.",
+    recommendation:
+      "Concentre o bloco de reativacao no fim da manha para aproveitar a mesma janela operacional.",
+    impact: "Recupera agenda futura com baixo esforco comercial.",
+    href: "#retornos",
+    hrefLabel: "Ver retornos recomendados",
+    tone: "Media",
   },
 ];

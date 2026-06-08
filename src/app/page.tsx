@@ -5,6 +5,7 @@ import {
   navigationItems,
   overviewMetrics,
   packageHealthItems,
+  priorityItems,
   whatsAppQueueItems,
 } from "@/data/dashboard";
 
@@ -25,6 +26,11 @@ const packageStatusClassName: Record<
   Acompanhar: "text-[var(--warning)]",
   "Renovar agora": "text-[var(--danger)]",
   Saudavel: "text-[var(--success)]",
+};
+
+const priorityToneClassName: Record<(typeof priorityItems)[number]["tone"], string> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 function getDateLabel() {
@@ -194,6 +200,53 @@ export default function Home() {
             ))}
           </section>
 
+          <section className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+            <SectionHeading
+              title="Prioridades do turno"
+              description="A recepcao precisa enxergar o que gera impacto agora: confirmar horarios, renovar pacotes e puxar retornos antes de perder timing."
+            />
+
+            <div className="mt-6 grid gap-4 xl:grid-cols-3">
+              {priorityItems.map((item) => (
+                <article
+                  key={item.id}
+                  className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.7)] p-5"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      {item.badge}
+                    </span>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${priorityToneClassName[item.tone]}`}
+                    >
+                      {item.tone} prioridade
+                    </span>
+                  </div>
+
+                  <h3 className="mt-4 text-xl font-semibold tracking-[-0.04em] text-[var(--foreground)]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-[var(--foreground)]">
+                    {item.detail}
+                  </p>
+                  <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
+                    {item.recommendation}
+                  </p>
+                  <p className="mt-4 rounded-[1.2rem] bg-[var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[var(--foreground)]">
+                    {item.impact}
+                  </p>
+
+                  <a
+                    href={item.href}
+                    className="mt-5 inline-flex items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                  >
+                    {item.hrefLabel}
+                  </a>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
             <div className="space-y-6">
               <section
@@ -284,7 +337,10 @@ export default function Home() {
             </div>
 
             <div className="space-y-6">
-              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+              <section
+                id="pacotes"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
                 <SectionHeading
                   title="Saude dos pacotes"
                   description="O saldo de sessoes aparece na superficie principal porque pacote e o centro economico do CRM."
@@ -322,7 +378,10 @@ export default function Home() {
                 </div>
               </section>
 
-              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+              <section
+                id="retornos"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
                 <SectionHeading
                   title="Retornos recomendados"
                   description="Atendimento bem encerrado gera a proxima agenda. Aqui entram os retornos que merecem acao antes de esfriar."

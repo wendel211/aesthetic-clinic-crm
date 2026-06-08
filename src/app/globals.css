@@ -13,6 +13,10 @@
   --warning: #a96f1c;
   --danger: #b04c48;
   --shadow: 0 22px 60px rgba(69, 46, 35, 0.08);
+  --font-manrope:
+    "Segoe UI", "Aptos", "Trebuchet MS", "Helvetica Neue", sans-serif;
+  --font-ibm-plex-mono:
+    "Consolas", "Aptos Mono", "SFMono-Regular", "Courier New", monospace;
 }
 
 @theme inline {
