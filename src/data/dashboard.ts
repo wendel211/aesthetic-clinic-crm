@@ -39,6 +39,17 @@ export type FollowUpItem = {
   targetDate: string;
 };
 
+export type AttendanceClosingItem = {
+  id: string;
+  client: string;
+  procedure: string;
+  professional: string;
+  packageBalance: string;
+  paymentStatus: string;
+  nextStep: string;
+  priority: "Consumir sessao" | "Cobrar hoje" | "Agendar retorno";
+};
+
 export type WhatsAppQueueItem = {
   id: string;
   client: string;
@@ -203,6 +214,39 @@ export const followUpItems: FollowUpItem[] = [
     client: "Fernanda Melo",
     reason: "Fechamento de novo pacote corporal",
     targetDate: "Confirmar interesse apos a sessao de sexta",
+  },
+];
+
+export const attendanceClosingItems: AttendanceClosingItem[] = [
+  {
+    id: "clo-1",
+    client: "Marina Costa",
+    procedure: "Limpeza de pele premium",
+    professional: "Dra. Larissa",
+    packageBalance: "Consumir 1 sessao; ficara 2 de 6",
+    paymentStatus: "Pacote ja pago",
+    nextStep: "Agendar retorno facial em 28 dias.",
+    priority: "Consumir sessao",
+  },
+  {
+    id: "clo-2",
+    client: "Bianca Alves",
+    procedure: "Laser para axilas",
+    professional: "Camila Reis",
+    packageBalance: "Ultima sessao do pacote atual",
+    paymentStatus: "Preparar renovacao de R$ 890",
+    nextStep: "Oferecer renovacao antes de encerrar o atendimento.",
+    priority: "Cobrar hoje",
+  },
+  {
+    id: "clo-3",
+    client: "Juliana Prado",
+    procedure: "Microagulhamento com drug delivery",
+    professional: "Dra. Larissa",
+    packageBalance: "Sessao avulsa; sem pacote ativo",
+    paymentStatus: "Receber R$ 420 no checkout",
+    nextStep: "Criar lembrete de revisao para 21 dias.",
+    priority: "Agendar retorno",
   },
 ];
 

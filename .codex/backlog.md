@@ -56,9 +56,9 @@
 
 - Conectar a dashboard inicial a entidades tipadas de clientes, agenda, procedimentos e pacotes.
 - Modelar entidades principais: empresa, usuario, cliente, profissional, procedimento, pacote, sessao, agendamento, anamnese e pagamento.
-- Criar cadastro de clientes.
-- Criar agenda de procedimentos com formularios.
-- Criar controle de pacotes e sessoes restantes com interacoes reais.
+- Persistir o cadastro rapido de clientes e agendamentos.
+- Criar agenda de procedimentos com formularios persistidos.
+- Persistir controle de pacotes, sessoes restantes e fechamento de atendimento.
 - Criar historico de atendimentos.
 - Implementar persistencia inicial com PostgreSQL e Prisma.
 
@@ -90,6 +90,8 @@
 - Base Next.js com TypeScript, Tailwind CSS e ESLint.
 - Tela operacional inicial, sem landing page, focada no uso diario da clinica.
 - Dados mockados tipados para agenda, clientes, pacotes, retornos e WhatsApp.
+- Fluxo rapido em memoria para cadastrar cliente, criar agendamento e preparar confirmacao por WhatsApp.
+- Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
 
 ## Proximas features comerciais
 

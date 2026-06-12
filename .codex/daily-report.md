@@ -1,5 +1,28 @@
 # Relatorio Diario
 
+## 2026-06-12
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental ligada a pacote, checkout e retorno, sem adicionar dependencia ou persistencia antes do schema.
+- Criado bloco "Fechamento de sessao" na tela operacional.
+- Adicionados dados mockados tipados para consumo de sessao, cobranca no checkout e proximo passo de retorno.
+- Implementado estado local para marcar fechamento concluido e acompanhar pendencias abertas no dia.
+- Mantida a entrega em escopo reduzido, preparando a futura persistencia em PostgreSQL/Prisma.
+
+### Validacao
+
+- `npm run lint`
+- `npm run build`
+- `Invoke-WebRequest http://localhost:3000` retornou HTTP 200.
+- Tentativa de verificacao visual no navegador interno falhou porque o webview nao anexou a aba dentro do tempo.
+
+### Proximo ciclo
+
+- Adicionar Prisma e schema inicial para clientes, agendamentos, pacotes, atendimentos e sessoes.
+- Persistir o fluxo rapido e o fechamento de sessao.
+
 ## 2026-06-07
 
 ### Feito

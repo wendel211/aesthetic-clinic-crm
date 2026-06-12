@@ -5,6 +5,7 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   agendaItems,
   type AgendaItem,
+  attendanceClosingItems,
   type ClientFocusItem,
   clientFocusItems,
   followUpItems,
@@ -38,6 +39,15 @@ const packageStatusClassName: Record<
 const priorityToneClassName: Record<(typeof priorityItems)[number]["tone"], string> = {
   Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const closingPriorityClassName: Record<
+  (typeof attendanceClosingItems)[number]["priority"],
+  string
+> = {
+  "Agendar retorno": "bg-[var(--accent-soft)] text-[var(--accent)]",
+  "Cobrar hoje": "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  "Consumir sessao": "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
 };
 
 type QuickFlowForm = {
@@ -125,6 +135,7 @@ export default function Home() {
   const [createdWhatsAppItems, setCreatedWhatsAppItems] = useState<
     WhatsAppQueueItem[]
   >([]);
+  const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -137,6 +148,9 @@ export default function Home() {
     () => [...createdWhatsAppItems, ...whatsAppQueueItems],
     [createdWhatsAppItems],
   );
+  const completedClosingCount = completedClosingIds.length;
+  const pendingClosingCount =
+    attendanceClosingItems.length - completedClosingCount;
   const quickFlowTemplate = buildConfirmationTemplate({
     client: quickFlowForm.client,
     procedure: quickFlowForm.procedure,
@@ -212,6 +226,14 @@ export default function Home() {
     }
 
     setQuickFlowForm(initialQuickFlowForm);
+  }
+
+  function toggleClosing(id: string) {
+    setCompletedClosingIds((current) =>
+      current.includes(id)
+        ? current.filter((completedId) => completedId !== id)
+        : [...current, id],
+    );
   }
 
   return (
@@ -718,6 +740,75 @@ export default function Home() {
                       </p>
                     </article>
                   ))}
+                </div>
+              </section>
+
+              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Fechamento de sessao"
+                  description="Controle o que precisa ser baixado no pacote, cobrado no checkout ou reagendado antes da cliente sair."
+                />
+
+                <div className="mt-5 flex items-center justify-between rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] px-4 py-3">
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    Pendencias do dia
+                  </span>
+                  <span className="font-mono text-sm text-[var(--muted)]">
+                    {pendingClosingCount} abertas / {completedClosingCount} feitas
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  {attendanceClosingItems.map((item) => {
+                    const isCompleted = completedClosingIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isCompleted
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm leading-6 text-[var(--muted)]">
+                              {item.procedure} com {item.professional}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${closingPriorityClassName[item.priority]}`}
+                          >
+                            {item.priority}
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="text-[var(--foreground)]">
+                            {item.packageBalance}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.paymentStatus}</p>
+                          <p className="text-[var(--foreground)]">{item.nextStep}</p>
+                        </div>
+
+                        <button
+                          className={`mt-4 inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                            isCompleted
+                              ? "bg-[var(--success)] text-white"
+                              : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                          }`}
+                          onClick={() => toggleClosing(item.id)}
+                          type="button"
+                        >
+                          {isCompleted ? "Sessao fechada" : "Marcar fechamento"}
+                        </button>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
 
