@@ -1,10 +1,19 @@
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
+
 import {
   agendaItems,
+  type AgendaItem,
+  attendanceClosingItems,
+  type ClientFocusItem,
   clientFocusItems,
   followUpItems,
   navigationItems,
   overviewMetrics,
   packageHealthItems,
+  priorityItems,
+  type WhatsAppQueueItem,
   whatsAppQueueItems,
 } from "@/data/dashboard";
 
@@ -26,6 +35,64 @@ const packageStatusClassName: Record<
   "Renovar agora": "text-[var(--danger)]",
   Saudavel: "text-[var(--success)]",
 };
+
+const priorityToneClassName: Record<(typeof priorityItems)[number]["tone"], string> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const closingPriorityClassName: Record<
+  (typeof attendanceClosingItems)[number]["priority"],
+  string
+> = {
+  "Agendar retorno": "bg-[var(--accent-soft)] text-[var(--accent)]",
+  "Cobrar hoje": "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  "Consumir sessao": "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+};
+
+type QuickFlowForm = {
+  client: string;
+  phone: string;
+  interest: string;
+  time: string;
+  procedure: string;
+  professional: string;
+  packageNote: string;
+};
+
+const initialQuickFlowForm: QuickFlowForm = {
+  client: "",
+  phone: "",
+  interest: "Avaliacao",
+  time: "16:00",
+  procedure: "Limpeza de pele premium",
+  professional: "Dra. Larissa",
+  packageNote: "Primeiro atendimento; avaliar indicacao de pacote.",
+};
+
+function buildConfirmationTemplate({
+  client,
+  procedure,
+  time,
+}: {
+  client: string;
+  procedure: string;
+  time: string;
+}) {
+  const firstName = client.trim().split(" ")[0] || "tudo bem";
+
+  return `Oi, ${firstName}! Passando para confirmar seu horario de ${procedure.toLowerCase()} hoje as ${time}. Posso deixar confirmado?`;
+}
+
+function buildWhatsAppUrl(phone: string, message: string) {
+  const digits = phone.replace(/\D/g, "");
+
+  if (!digits) {
+    return "#";
+  }
+
+  return `https://wa.me/55${digits}?text=${encodeURIComponent(message)}`;
+}
 
 function getDateLabel() {
   const formattedDate = new Intl.DateTimeFormat("pt-BR", {
@@ -60,6 +127,114 @@ function SectionHeading({
 
 export default function Home() {
   const dateLabel = getDateLabel();
+  const [quickFlowForm, setQuickFlowForm] = useState<QuickFlowForm>(
+    initialQuickFlowForm,
+  );
+  const [createdAppointments, setCreatedAppointments] = useState<AgendaItem[]>([]);
+  const [createdClients, setCreatedClients] = useState<ClientFocusItem[]>([]);
+  const [createdWhatsAppItems, setCreatedWhatsAppItems] = useState<
+    WhatsAppQueueItem[]
+  >([]);
+  const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
+  const agendaList = useMemo(
+    () => [...agendaItems, ...createdAppointments],
+    [createdAppointments],
+  );
+  const clientFocusList = useMemo(
+    () => [...createdClients, ...clientFocusItems],
+    [createdClients],
+  );
+  const whatsAppQueueList = useMemo(
+    () => [...createdWhatsAppItems, ...whatsAppQueueItems],
+    [createdWhatsAppItems],
+  );
+  const completedClosingCount = completedClosingIds.length;
+  const pendingClosingCount =
+    attendanceClosingItems.length - completedClosingCount;
+  const quickFlowTemplate = buildConfirmationTemplate({
+    client: quickFlowForm.client,
+    procedure: quickFlowForm.procedure,
+    time: quickFlowForm.time,
+  });
+  const quickFlowWhatsAppUrl = buildWhatsAppUrl(
+    quickFlowForm.phone,
+    quickFlowTemplate,
+  );
+
+  function updateQuickFlowForm(field: keyof QuickFlowForm, value: string) {
+    setQuickFlowForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function handleQuickFlowSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const clientName = quickFlowForm.client.trim();
+    if (!clientName) {
+      return;
+    }
+
+    const idSuffix = `${Date.now()}`;
+    setCreatedClients((current) => [
+      {
+        id: `novo-cliente-${idSuffix}`,
+        name: clientName,
+        tag: quickFlowForm.interest,
+        summary: quickFlowForm.phone
+          ? `Contato informado: ${quickFlowForm.phone}.`
+          : "Contato ainda precisa ser confirmado pela recepcao.",
+        nextAction: `Confirmar ${quickFlowForm.procedure.toLowerCase()} as ${quickFlowForm.time} por WhatsApp.`,
+      },
+      ...current,
+    ]);
+
+    setCreatedAppointments((current) => [
+      ...current,
+      {
+        id: `novo-agendamento-${idSuffix}`,
+        time: quickFlowForm.time,
+        duration: "50 min",
+        client: clientName,
+        procedure: quickFlowForm.procedure,
+        professional: quickFlowForm.professional,
+        status: "Aguardando",
+        packageNote: quickFlowForm.packageNote,
+      },
+    ]);
+
+    if (quickFlowForm.phone.trim()) {
+      setCreatedWhatsAppItems((current) => [
+        {
+          id: `novo-whatsapp-${idSuffix}`,
+          client: clientName,
+          reason: "Confirmacao criada no fluxo rapido",
+          template: buildConfirmationTemplate({
+            client: clientName,
+            procedure: quickFlowForm.procedure,
+            time: quickFlowForm.time,
+          }),
+          url: buildWhatsAppUrl(
+            quickFlowForm.phone,
+            buildConfirmationTemplate({
+              client: clientName,
+              procedure: quickFlowForm.procedure,
+              time: quickFlowForm.time,
+            }),
+          ),
+        },
+        ...current,
+      ]);
+    }
+
+    setQuickFlowForm(initialQuickFlowForm);
+  }
+
+  function toggleClosing(id: string) {
+    setCompletedClosingIds((current) =>
+      current.includes(id)
+        ? current.filter((completedId) => completedId !== id)
+        : [...current, id],
+    );
+  }
 
   return (
     <main className="min-h-screen bg-transparent text-[var(--foreground)]">
@@ -194,6 +369,219 @@ export default function Home() {
             ))}
           </section>
 
+          <section
+            id="fluxo-rapido"
+            className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+          >
+            <SectionHeading
+              title="Fluxo rapido da recepcao"
+              description="Cadastre uma cliente interessada e ja coloque o primeiro horario na agenda do dia, com acao de WhatsApp pronta para confirmacao."
+            />
+
+            <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
+              <form
+                className="grid gap-4 rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-4 sm:grid-cols-2"
+                onSubmit={handleQuickFlowSubmit}
+              >
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)]">
+                  Cliente
+                  <input
+                    className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none transition-colors focus:border-[var(--accent)]"
+                    onChange={(event) =>
+                      updateQuickFlowForm("client", event.target.value)
+                    }
+                    placeholder="Nome da cliente"
+                    required
+                    value={quickFlowForm.client}
+                  />
+                </label>
+
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)]">
+                  WhatsApp
+                  <input
+                    className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none transition-colors focus:border-[var(--accent)]"
+                    inputMode="tel"
+                    onChange={(event) =>
+                      updateQuickFlowForm("phone", event.target.value)
+                    }
+                    placeholder="11999998888"
+                    value={quickFlowForm.phone}
+                  />
+                </label>
+
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)]">
+                  Interesse
+                  <select
+                    className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none transition-colors focus:border-[var(--accent)]"
+                    onChange={(event) =>
+                      updateQuickFlowForm("interest", event.target.value)
+                    }
+                    value={quickFlowForm.interest}
+                  >
+                    <option>Avaliacao</option>
+                    <option>Retorno</option>
+                    <option>Renovacao</option>
+                    <option>Reagendamento</option>
+                  </select>
+                </label>
+
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)]">
+                  Horario
+                  <input
+                    className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none transition-colors focus:border-[var(--accent)]"
+                    onChange={(event) =>
+                      updateQuickFlowForm("time", event.target.value)
+                    }
+                    type="time"
+                    value={quickFlowForm.time}
+                  />
+                </label>
+
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)]">
+                  Procedimento
+                  <select
+                    className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none transition-colors focus:border-[var(--accent)]"
+                    onChange={(event) =>
+                      updateQuickFlowForm("procedure", event.target.value)
+                    }
+                    value={quickFlowForm.procedure}
+                  >
+                    <option>Limpeza de pele premium</option>
+                    <option>Laser para axilas</option>
+                    <option>Microagulhamento com drug delivery</option>
+                    <option>Depilacao a laser perna inteira</option>
+                    <option>Drenagem pos-operatoria</option>
+                  </select>
+                </label>
+
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)]">
+                  Profissional
+                  <select
+                    className="w-full rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none transition-colors focus:border-[var(--accent)]"
+                    onChange={(event) =>
+                      updateQuickFlowForm("professional", event.target.value)
+                    }
+                    value={quickFlowForm.professional}
+                  >
+                    <option>Dra. Larissa</option>
+                    <option>Camila Reis</option>
+                    <option>Recepcao comercial</option>
+                  </select>
+                </label>
+
+                <label className="space-y-2 text-sm font-medium text-[var(--foreground)] sm:col-span-2">
+                  Observacao de pacote
+                  <textarea
+                    className="min-h-24 w-full resize-none rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal leading-6 outline-none transition-colors focus:border-[var(--accent)]"
+                    onChange={(event) =>
+                      updateQuickFlowForm("packageNote", event.target.value)
+                    }
+                    value={quickFlowForm.packageNote}
+                  />
+                </label>
+
+                <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row">
+                  <button
+                    className="inline-flex items-center justify-center rounded-full bg-[var(--foreground)] px-5 py-3 text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
+                    type="submit"
+                  >
+                    Cadastrar e agendar
+                  </button>
+                  <a
+                    className={`inline-flex items-center justify-center rounded-full border border-[var(--line)] px-5 py-3 text-sm font-medium transition-colors ${
+                      quickFlowForm.phone
+                        ? "bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                        : "pointer-events-none bg-white/50 text-[var(--muted)]"
+                    }`}
+                    href={quickFlowWhatsAppUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Preparar WhatsApp
+                  </a>
+                </div>
+              </form>
+
+              <div className="rounded-[1.6rem] border border-[var(--line)] bg-[var(--surface-strong)] p-5">
+                <p className="text-xs font-medium uppercase tracking-[0.22em] text-[var(--muted)]">
+                  Criados nesta sessao
+                </p>
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="rounded-[1.2rem] bg-white px-4 py-4">
+                    <strong className="text-3xl font-semibold tracking-[-0.05em]">
+                      {createdClients.length}
+                    </strong>
+                    <p className="mt-2 text-sm leading-5 text-[var(--muted)]">
+                      clientes em aquecimento
+                    </p>
+                  </div>
+                  <div className="rounded-[1.2rem] bg-white px-4 py-4">
+                    <strong className="text-3xl font-semibold tracking-[-0.05em]">
+                      {createdAppointments.length}
+                    </strong>
+                    <p className="mt-2 text-sm leading-5 text-[var(--muted)]">
+                      horarios aguardando confirmacao
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-5 text-sm leading-6 text-[var(--foreground)]">
+                  Mensagem sugerida: {quickFlowTemplate}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                  Ao cadastrar, clientes com telefone entram tambem na fila de
+                  WhatsApp para confirmacao imediata.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+            <SectionHeading
+              title="Prioridades do turno"
+              description="A recepcao precisa enxergar o que gera impacto agora: confirmar horarios, renovar pacotes e puxar retornos antes de perder timing."
+            />
+
+            <div className="mt-6 grid gap-4 xl:grid-cols-3">
+              {priorityItems.map((item) => (
+                <article
+                  key={item.id}
+                  className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.7)] p-5"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      {item.badge}
+                    </span>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${priorityToneClassName[item.tone]}`}
+                    >
+                      {item.tone} prioridade
+                    </span>
+                  </div>
+
+                  <h3 className="mt-4 text-xl font-semibold tracking-[-0.04em] text-[var(--foreground)]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-[var(--foreground)]">
+                    {item.detail}
+                  </p>
+                  <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
+                    {item.recommendation}
+                  </p>
+                  <p className="mt-4 rounded-[1.2rem] bg-[var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[var(--foreground)]">
+                    {item.impact}
+                  </p>
+
+                  <a
+                    href={item.href}
+                    className="mt-5 inline-flex items-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                  >
+                    {item.hrefLabel}
+                  </a>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
             <div className="space-y-6">
               <section
@@ -206,7 +594,7 @@ export default function Home() {
                 />
 
                 <div className="mt-6 space-y-4">
-                  {agendaItems.map((item) => (
+                  {agendaList.map((item) => (
                     <article
                       key={item.id}
                       className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.64)] p-4 transition-transform hover:-translate-y-0.5"
@@ -258,7 +646,7 @@ export default function Home() {
                 />
 
                 <div className="mt-6 grid gap-4 lg:grid-cols-3">
-                  {clientFocusItems.map((item) => (
+                  {clientFocusList.map((item) => (
                     <article
                       key={item.id}
                       className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-5"
@@ -284,7 +672,10 @@ export default function Home() {
             </div>
 
             <div className="space-y-6">
-              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+              <section
+                id="pacotes"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
                 <SectionHeading
                   title="Saude dos pacotes"
                   description="O saldo de sessoes aparece na superficie principal porque pacote e o centro economico do CRM."
@@ -322,7 +713,10 @@ export default function Home() {
                 </div>
               </section>
 
-              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+              <section
+                id="retornos"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
                 <SectionHeading
                   title="Retornos recomendados"
                   description="Atendimento bem encerrado gera a proxima agenda. Aqui entram os retornos que merecem acao antes de esfriar."
@@ -349,6 +743,75 @@ export default function Home() {
                 </div>
               </section>
 
+              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Fechamento de sessao"
+                  description="Controle o que precisa ser baixado no pacote, cobrado no checkout ou reagendado antes da cliente sair."
+                />
+
+                <div className="mt-5 flex items-center justify-between rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] px-4 py-3">
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    Pendencias do dia
+                  </span>
+                  <span className="font-mono text-sm text-[var(--muted)]">
+                    {pendingClosingCount} abertas / {completedClosingCount} feitas
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  {attendanceClosingItems.map((item) => {
+                    const isCompleted = completedClosingIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isCompleted
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm leading-6 text-[var(--muted)]">
+                              {item.procedure} com {item.professional}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${closingPriorityClassName[item.priority]}`}
+                          >
+                            {item.priority}
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="text-[var(--foreground)]">
+                            {item.packageBalance}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.paymentStatus}</p>
+                          <p className="text-[var(--foreground)]">{item.nextStep}</p>
+                        </div>
+
+                        <button
+                          className={`mt-4 inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                            isCompleted
+                              ? "bg-[var(--success)] text-white"
+                              : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                          }`}
+                          onClick={() => toggleClosing(item.id)}
+                          type="button"
+                        >
+                          {isCompleted ? "Sessao fechada" : "Marcar fechamento"}
+                        </button>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+
               <section
                 id="whatsapp"
                 className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface-strong)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
@@ -362,7 +825,7 @@ export default function Home() {
                 </div>
 
                 <div className="mt-6 space-y-4">
-                  {whatsAppQueueItems.map((item) => (
+                  {whatsAppQueueList.map((item) => (
                     <article
                       key={item.id}
                       className="rounded-[1.6rem] border border-[var(--line)] bg-white p-4"
