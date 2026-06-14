@@ -19,11 +19,12 @@ Workspace configurado com memoria operacional, backlog, repositorio GitHub conec
 Ja existe uma primeira tela funcional do produto com dashboard operacional, agenda, clientes, pacotes, retornos e fila de WhatsApp usando dados mockados tipados.
 O fluxo rapido da recepcao ja permite criar cliente/agendamento em memoria e preparar mensagem de confirmacao por WhatsApp.
 Foi adicionado um bloco de fechamento de sessao para a equipe marcar consumo de pacote, cobranca no checkout e proximo retorno do atendimento.
+Foi adicionada a base inicial de persistencia com Prisma 7 e schema PostgreSQL multiempresa para clientes, profissionais, procedimentos, pacotes, sessoes, agenda, anamnese, atendimentos, pagamentos e comissoes.
 
 Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
-- Implementar persistencia inicial com PostgreSQL e Prisma.
-- Modelar entidades para evoluir mock para fluxo real.
+- Criar migrations quando houver `DATABASE_URL` real configurada.
+- Conectar formularios e cards operacionais ao Prisma.
 - Configurar testes automatizados quando a primeira camada de regras estiver pronta.
 
 ## Preferencia atual de ciclo
@@ -33,10 +34,9 @@ Executar diariamente as 09:30 no horario de Brasilia, para nao colidir com o cic
 ## Proxima acao recomendada
 
 Implementar o primeiro fluxo operacional editavel:
-- schema Prisma/PostgreSQL para clientes, agenda, pacotes e atendimentos
 - persistencia do cadastro rapido e fechamento de sessao
 - regras de baixa de sessoes e agenda de retorno
-- preparacao do schema PostgreSQL/Prisma para persistencia real
+- migration inicial PostgreSQL quando o banco de desenvolvimento estiver definido
 
 ## Decisoes em aberto
 

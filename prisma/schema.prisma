@@ -1,0 +1,341 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  RECEPTION
+  PROFESSIONAL
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_SERVICE
+  COMPLETED
+  MISSED
+  CANCELED
+  RESCHEDULED
+}
+
+enum AppointmentSource {
+  RECEPTION
+  WHATSAPP
+  INSTAGRAM
+  REFERRAL
+  RETURN
+}
+
+enum PackageStatus {
+  ACTIVE
+  RENEWAL_DUE
+  EXPIRED
+  COMPLETED
+  CANCELED
+}
+
+enum SessionStatus {
+  AVAILABLE
+  CONSUMED
+  MISSED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  PIX
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  OTHER
+}
+
+model Company {
+  id             String         @id @default(cuid())
+  name           String
+  phone          String?
+  address        String?
+  plan           String         @default("mvp")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  users          User[]
+  customers      Customer[]
+  professionals  Professional[]
+  procedures     Procedure[]
+  packages       Package[]
+  appointments   Appointment[]
+  anamnesisForms AnamnesisForm[]
+  attendances    Attendance[]
+  payments       Payment[]
+  commissions    Commission[]
+
+  @@map("companies")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  companyId String
+  name      String
+  email     String
+  role      UserRole @default(RECEPTION)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, email])
+  @@index([companyId, role])
+  @@map("users")
+}
+
+model Customer {
+  id             String          @id @default(cuid())
+  companyId      String
+  name           String
+  phone          String
+  birthday       DateTime?
+  labels         String[]        @default([])
+  notes          String?
+  consentGiven   Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  packages       Package[]
+  appointments   Appointment[]
+  anamnesisForms AnamnesisForm[]
+  attendances    Attendance[]
+  payments       Payment[]
+
+  @@index([companyId, name])
+  @@index([companyId, phone])
+  @@map("customers")
+}
+
+model Professional {
+  id                String        @id @default(cuid())
+  companyId         String
+  name              String
+  specialties       String[]      @default([])
+  commissionPercent Decimal       @default(0) @db.Decimal(5, 2)
+  active            Boolean       @default(true)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  company           Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  appointments      Appointment[]
+  attendances       Attendance[]
+  commissions       Commission[]
+
+  @@index([companyId, active])
+  @@map("professionals")
+}
+
+model Procedure {
+  id              String          @id @default(cuid())
+  companyId       String
+  name            String
+  category        String
+  durationMinutes Int
+  price           Decimal         @db.Decimal(10, 2)
+  instructions    String?
+  active          Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  company         Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  packages        Package[]
+  appointments    Appointment[]
+  anamnesisForms  AnamnesisForm[]
+  attendances     Attendance[]
+
+  @@unique([companyId, name])
+  @@index([companyId, category])
+  @@map("procedures")
+}
+
+model Package {
+  id            String           @id @default(cuid())
+  companyId     String
+  customerId    String
+  procedureId   String
+  totalSessions Int
+  usedSessions  Int              @default(0)
+  validUntil    DateTime
+  status        PackageStatus    @default(ACTIVE)
+  soldAt        DateTime         @default(now())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  company       Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer      Customer         @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  procedure     Procedure        @relation(fields: [procedureId], references: [id], onDelete: Restrict)
+  sessions      PackageSession[]
+  appointments  Appointment[]
+  attendances   Attendance[]
+  payments      Payment[]
+
+  @@index([companyId, status])
+  @@index([companyId, validUntil])
+  @@index([customerId, procedureId])
+  @@map("packages")
+}
+
+model PackageSession {
+  id          String        @id @default(cuid())
+  packageId   String
+  sessionNo   Int
+  status      SessionStatus @default(AVAILABLE)
+  consumedAt  DateTime?
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  package     Package       @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  attendances Attendance[]
+
+  @@unique([packageId, sessionNo])
+  @@index([packageId, status])
+  @@map("package_sessions")
+}
+
+model Appointment {
+  id               String            @id @default(cuid())
+  companyId        String
+  customerId       String
+  professionalId   String?
+  procedureId      String
+  packageId        String?
+  scheduledAt      DateTime
+  durationMinutes  Int
+  status           AppointmentStatus @default(SCHEDULED)
+  source           AppointmentSource @default(RECEPTION)
+  notes            String?
+  confirmationSent Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer         Customer          @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  professional     Professional?     @relation(fields: [professionalId], references: [id], onDelete: SetNull)
+  procedure        Procedure         @relation(fields: [procedureId], references: [id], onDelete: Restrict)
+  package          Package?          @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  attendance       Attendance?
+  payments         Payment[]
+
+  @@index([companyId, scheduledAt])
+  @@index([companyId, status])
+  @@index([customerId, scheduledAt])
+  @@map("appointments")
+}
+
+model AnamnesisForm {
+  id            String    @id @default(cuid())
+  companyId     String
+  customerId    String
+  procedureId   String?
+  answers       Json
+  restrictions  String?
+  reviewedAt    DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  procedure     Procedure? @relation(fields: [procedureId], references: [id], onDelete: SetNull)
+
+  @@index([companyId, reviewedAt])
+  @@index([customerId, reviewedAt])
+  @@map("anamnesis_forms")
+}
+
+model Attendance {
+  id                String          @id @default(cuid())
+  companyId         String
+  customerId        String
+  appointmentId     String?         @unique
+  professionalId    String?
+  procedureId       String
+  packageId         String?
+  packageSessionId  String?
+  evolution         String?
+  notes             String?
+  productsUsed      String?
+  recommendedReturn DateTime?
+  completedAt       DateTime        @default(now())
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  company           Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer          Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  appointment       Appointment?    @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  professional      Professional?   @relation(fields: [professionalId], references: [id], onDelete: SetNull)
+  procedure         Procedure       @relation(fields: [procedureId], references: [id], onDelete: Restrict)
+  package           Package?        @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  packageSession    PackageSession? @relation(fields: [packageSessionId], references: [id], onDelete: SetNull)
+  payments          Payment[]
+  commissions       Commission[]
+
+  @@index([companyId, completedAt])
+  @@index([customerId, completedAt])
+  @@index([professionalId, completedAt])
+  @@map("attendances")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  companyId     String
+  customerId    String
+  packageId     String?
+  appointmentId String?
+  attendanceId  String?
+  amount        Decimal       @db.Decimal(10, 2)
+  method        PaymentMethod?
+  status        PaymentStatus @default(PENDING)
+  dueAt         DateTime?
+  paidAt        DateTime?
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  company       Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  package       Package?      @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  attendance    Attendance?   @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
+  commissions   Commission[]
+
+  @@index([companyId, status])
+  @@index([companyId, dueAt])
+  @@index([customerId, createdAt])
+  @@map("payments")
+}
+
+model Commission {
+  id             String        @id @default(cuid())
+  companyId      String
+  professionalId String
+  attendanceId   String?
+  paymentId      String?
+  baseAmount     Decimal       @db.Decimal(10, 2)
+  percent        Decimal       @db.Decimal(5, 2)
+  amount         Decimal       @db.Decimal(10, 2)
+  status         PaymentStatus @default(PENDING)
+  dueAt          DateTime?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  company        Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  professional   Professional  @relation(fields: [professionalId], references: [id], onDelete: Restrict)
+  attendance     Attendance?   @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
+  payment        Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([companyId, status])
+  @@index([professionalId, dueAt])
+  @@map("commissions")
+}
