@@ -1,5 +1,27 @@
 # Relatorio Diario
 
+## 2026-06-13
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental de infraestrutura de dados para destravar persistencia sem alterar a UI atual.
+- Adicionado Prisma 7 com configuracao PostgreSQL.
+- Criado schema inicial multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes de pacote, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
+- Adicionados scripts `prisma:validate` e `prisma:generate`.
+- Criado `.env.example` com formato esperado de `DATABASE_URL`.
+
+### Validacao
+
+- `npm run prisma:validate`
+- `npm run prisma:generate`
+
+### Proximo ciclo
+
+- Configurar `DATABASE_URL` de desenvolvimento e criar a migration inicial.
+- Persistir o fluxo rapido de cliente/agendamento usando o schema Prisma.
+- Persistir o fechamento de sessao com baixa de pacote, pagamento e retorno recomendado.
+
 ## 2026-06-12
 
 ### Feito

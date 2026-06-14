@@ -55,12 +55,12 @@
 ## Agora
 
 - Conectar a dashboard inicial a entidades tipadas de clientes, agenda, procedimentos e pacotes.
-- Modelar entidades principais: empresa, usuario, cliente, profissional, procedimento, pacote, sessao, agendamento, anamnese e pagamento.
 - Persistir o cadastro rapido de clientes e agendamentos.
 - Criar agenda de procedimentos com formularios persistidos.
 - Persistir controle de pacotes, sessoes restantes e fechamento de atendimento.
 - Criar historico de atendimentos.
-- Implementar persistencia inicial com PostgreSQL e Prisma.
+- Criar migration inicial PostgreSQL a partir do schema Prisma.
+- Conectar os formularios da tela operacional ao Prisma.
 
 ## Arquitetura de dados
 
@@ -92,6 +92,7 @@
 - Dados mockados tipados para agenda, clientes, pacotes, retornos e WhatsApp.
 - Fluxo rapido em memoria para cadastrar cliente, criar agendamento e preparar confirmacao por WhatsApp.
 - Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
+- Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
 
