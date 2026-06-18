@@ -1,5 +1,20 @@
 # Relatorio Diario
 
+## 2026-06-18
+
+### Feito
+
+- Registrada a preferencia operacional de manter ciclos diarios incrementais.
+- Horario preferencial do ciclo diario ajustado para 09:00 no horario de Brasilia.
+
+### Validacao
+
+- Alteracao documental e operacional; nao houve mudanca de codigo para validar.
+
+### Proximo ciclo
+
+- Continuar a partir do PR de schema Prisma e priorizar persistencia do fluxo rapido de cliente/agendamento.
+
 ## 2026-06-13
 
 ### Feito

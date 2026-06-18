@@ -29,7 +29,7 @@ Ainda pendente:
 
 ## Preferencia atual de ciclo
 
-Executar diariamente as 09:30 no horario de Brasilia, para nao colidir com o ciclo do CRM Pet Feira.
+Executar diariamente as 09:00 no horario de Brasilia, mantendo ciclos incrementais pequenos e PR por feature quando houver mudanca de produto/codigo.
 
 ## Proxima acao recomendada
 
