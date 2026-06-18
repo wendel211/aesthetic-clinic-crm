@@ -7,6 +7,11 @@ Contexto:
 - O produto deve ser simples, vendavel e util para equipes pequenas.
 - Areas de maior valor: agenda, confirmacao, pacotes, sessoes restantes, retorno e WhatsApp.
 
+Agenda da automacao:
+- Automation ID: `crm-estetica-pro-ciclo-diario`.
+- Executar diariamente as 09:00 no horario de Brasilia.
+- Registrar decisoes e resumo do ciclo em `.codex/daily-report.md` e na memoria externa da automacao.
+
 Rotina diaria:
 1. Leia `AGENTS.md` e os arquivos em `.codex/`.
 2. Use `.codex/backlog.md` e `.codex/structure.md` como mapa principal de produto e arquitetura.
