@@ -1,5 +1,27 @@
 # Relatorio Diario
 
+## 2026-06-19
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental de relacionamento por WhatsApp, sem dependencia externa e sem bloquear em banco.
+- Adicionados dados tipados para campanhas de reativacao com cliente, segmento, dias sem visita, risco de receita, oferta e mensagem sugerida.
+- Criada a secao "Campanhas de reativacao" na tela operacional, com prioridade e CTA direto para WhatsApp.
+- Mantida a entrega em escopo reduzido para preparar futura persistencia de retornos e reativacoes.
+
+### Validacao
+
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Campanhas de reativacao".
+
+### Proximo ciclo
+
+- Persistir cadastro rapido, fechamento de sessao e campanhas de reativacao quando houver `DATABASE_URL` de desenvolvimento.
+- Criar uma primeira regra automatizada para classificar clientes inativas por dias sem visita, saldo de pacote e valor estimado.
+
 ## 2026-06-13
 
 ### Feito
