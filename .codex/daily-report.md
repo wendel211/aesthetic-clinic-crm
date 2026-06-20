@@ -10,6 +10,7 @@
 - Incluidos prazo sugerido e prioridade nos itens mockados da fila de WhatsApp.
 - Implementado estado em memoria para marcar contato como enviado e refletir a conclusao visualmente.
 - Criada branch `feat/confirmacao-whatsapp` para publicar a entrega.
+- PR aberto: https://github.com/wendel211/aesthetic-clinic-crm/pull/6
 
 ### Validacao
 
