@@ -56,6 +56,8 @@ export type WhatsAppQueueItem = {
   reason: string;
   template: string;
   url: string;
+  dueLabel: string;
+  priority: "Alta" | "Media";
 };
 
 export type PriorityItem = {
@@ -257,6 +259,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Confirmacao pendente de hoje",
     template: "Oi, Renata! Passando para confirmar seu horario das 14h20.",
     url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar ate 13:20",
+    priority: "Alta",
   },
   {
     id: "wa-2",
@@ -264,6 +268,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Retorno de manutencao",
     template: "Oi, Paula! Ja podemos programar sua proxima manutencao.",
     url: "https://wa.me/5511922222222",
+    dueLabel: "Enviar hoje",
+    priority: "Media",
   },
   {
     id: "wa-3",
@@ -271,6 +277,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Reagendamento apos falta",
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
+    dueLabel: "Enviar antes das 17:00",
+    priority: "Alta",
   },
 ];
 

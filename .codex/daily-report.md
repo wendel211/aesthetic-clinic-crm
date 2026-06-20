@@ -1,5 +1,30 @@
 # Relatorio Diario
 
+## 2026-06-20
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental para reduzir faltas e organizar a rotina da recepcao sem depender de banco.
+- Adicionada central de confirmacao na fila de WhatsApp com contadores de pendencias e contatos de alta prioridade.
+- Incluidos prazo sugerido e prioridade nos itens mockados da fila de WhatsApp.
+- Implementado estado em memoria para marcar contato como enviado e refletir a conclusao visualmente.
+- Criada branch `feat/confirmacao-whatsapp` para publicar a entrega.
+
+### Validacao
+
+- `npm ci` instalou dependencias, mas o comando excedeu o timeout depois de concluir a instalacao; o npm reportou 5 vulnerabilidades moderadas.
+- `npm run lint`
+- `npm run build`
+- `npm run prisma:validate`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200.
+- Tentativa de verificacao visual com Playwright falhou por timeout do tool.
+
+### Proximo ciclo
+
+- Persistir confirmacao enviada, resposta da cliente e reagendamento/falta por agendamento.
+- Conectar o fluxo rapido e a central de WhatsApp ao Prisma quando houver `DATABASE_URL` de desenvolvimento.
+
 ## 2026-06-13
 
 ### Feito
