@@ -60,6 +60,18 @@ export type WhatsAppQueueItem = {
   priority: "Alta" | "Media";
 };
 
+export type RetentionCampaignItem = {
+  id: string;
+  client: string;
+  segment: string;
+  daysWithoutVisit: number;
+  revenueRisk: string;
+  offer: string;
+  template: string;
+  url: string;
+  tone: "Alta" | "Media";
+};
+
 export type PriorityItem = {
   id: string;
   badge: string;
@@ -279,6 +291,45 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     url: "https://wa.me/5511933333333",
     dueLabel: "Enviar antes das 17:00",
     priority: "Alta",
+  },
+];
+
+export const retentionCampaignItems: RetentionCampaignItem[] = [
+  {
+    id: "ret-1",
+    client: "Paula Siqueira",
+    segment: "Manutencao facial",
+    daysWithoutVisit: 151,
+    revenueRisk: "R$ 620 em manutencao prevista",
+    offer: "Avaliacao de retorno com bonus de limpeza expressa.",
+    template:
+      "Oi, Paula! Notei que ja esta na janela da sua manutencao. Quer que eu separe uma avaliacao rapida esta semana?",
+    url: "https://wa.me/5511922222222",
+    tone: "Alta",
+  },
+  {
+    id: "ret-2",
+    client: "Aline Mota",
+    segment: "Reagendamento apos falta",
+    daysWithoutVisit: 34,
+    revenueRisk: "4 sessoes de drenagem ainda em aberto",
+    offer: "Dois horarios curtos no almoco para retomar o pacote.",
+    template:
+      "Oi, Aline! Tenho dois horarios praticos para voce retomar sua drenagem sem perder o ritmo do pacote. Posso te mandar?",
+    url: "https://wa.me/5511933333333",
+    tone: "Alta",
+  },
+  {
+    id: "ret-3",
+    client: "Tatiane Rocha",
+    segment: "Pacote saudavel",
+    daysWithoutVisit: 22,
+    revenueRisk: "Reter recorrencia corporal",
+    offer: "Lembrete preventivo para manter intervalo ideal.",
+    template:
+      "Oi, Tatiane! Passando para manter seu intervalo certinho. Quer deixar sua proxima sessao reservada?",
+    url: "https://wa.me/5511944444444",
+    tone: "Media",
   },
 ];
 
