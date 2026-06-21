@@ -92,10 +92,12 @@
 - Dados mockados tipados para agenda, clientes, pacotes, retornos e WhatsApp.
 - Fluxo rapido em memoria para cadastrar cliente, criar agendamento e preparar confirmacao por WhatsApp.
 - Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
+- Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
 
+- Persistir campanhas de reativacao e retornos recomendados.
 - Lembrete de confirmacao por WhatsApp.
 - Controle de faltas e reagendamento.
 - Ficha de anamnese por procedimento.
