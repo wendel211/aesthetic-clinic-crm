@@ -20,6 +20,7 @@ Ja existe uma primeira tela funcional do produto com dashboard operacional, agen
 O fluxo rapido da recepcao ja permite criar cliente/agendamento em memoria e preparar mensagem de confirmacao por WhatsApp.
 Foi adicionado um bloco de fechamento de sessao para a equipe marcar consumo de pacote, cobranca no checkout e proximo retorno do atendimento.
 Foi adicionada a base inicial de persistencia com Prisma 7 e schema PostgreSQL multiempresa para clientes, profissionais, procedimentos, pacotes, sessoes, agenda, anamnese, atendimentos, pagamentos e comissoes.
+Foi adicionada uma central de confirmacao por WhatsApp em memoria, com prioridade, prazo sugerido, contadores de pendencias e botao para marcar contato enviado.
 Foi adicionada uma central de campanhas de reativacao por WhatsApp, ainda mockada, para priorizar clientes paradas ou em risco com oferta sugerida e link de contato.
 
 Ainda pendente:
@@ -27,6 +28,7 @@ Ainda pendente:
 - Persistir retornos recomendados e campanhas de reativacao.
 - Criar migrations quando houver `DATABASE_URL` real configurada.
 - Conectar formularios e cards operacionais ao Prisma.
+- Persistir status de mensagens enviadas, respostas de confirmacao e reagendamentos.
 - Configurar testes automatizados quando a primeira camada de regras estiver pronta.
 
 ## Preferencia atual de ciclo
@@ -37,6 +39,7 @@ Executar diariamente as 09:30 no horario de Brasilia, para nao colidir com o cic
 
 Implementar o primeiro fluxo operacional editavel:
 - persistencia do cadastro rapido e fechamento de sessao
+- persistencia da central de confirmacao por WhatsApp
 - persistencia das campanhas de reativacao e retornos recomendados
 - regras de baixa de sessoes e agenda de retorno
 - migration inicial PostgreSQL quando o banco de desenvolvimento estiver definido
