@@ -10,6 +10,7 @@ import {
   clientFocusItems,
   followUpItems,
   navigationItems,
+  noShowRiskItems,
   overviewMetrics,
   packageHealthItems,
   priorityItems,
@@ -57,6 +58,11 @@ const retentionToneClassName: Record<
 > = {
   Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const noShowToneClassName: Record<(typeof noShowRiskItems)[number]["tone"], string> = {
+  Alto: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Medio: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 type QuickFlowForm = {
@@ -747,6 +753,79 @@ export default function Home() {
                       <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
                         {item.targetDate}
                       </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section
+                id="faltas"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
+                <SectionHeading
+                  title="Risco de falta e reagendamento"
+                  description="Fila curta para proteger a agenda do dia: confirme quem esta em risco e ja ofereca um horario alternativo antes de perder receita."
+                />
+
+                <div className="mt-5 flex items-center justify-between rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] px-4 py-3">
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    Acoes preventivas
+                  </span>
+                  <span className="font-mono text-sm text-[var(--muted)]">
+                    {noShowRiskItems.length} clientes em risco
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  {noShowRiskItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-4"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <h3 className="font-semibold tracking-[-0.02em]">
+                            {item.client}
+                          </h3>
+                          <p className="text-sm leading-6 text-[var(--muted)]">
+                            {item.appointmentTime} - {item.procedure}
+                          </p>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${noShowToneClassName[item.tone]}`}
+                        >
+                          Risco {item.tone.toLowerCase()}
+                        </span>
+                      </div>
+
+                      <div className="mt-4 space-y-2 text-sm leading-6">
+                        <p className="text-[var(--foreground)]">{item.reason}</p>
+                        <p className="text-[var(--muted)]">{item.suggestedAction}</p>
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {item.fallbackSlots.map((slot) => (
+                          <span
+                            key={slot}
+                            className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-xs font-medium text-[var(--foreground)]"
+                          >
+                            Alternativa {slot}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.template}
+                      </p>
+
+                      <a
+                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                        href={item.url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Confirmar ou reagendar
+                      </a>
                     </article>
                   ))}
                 </div>

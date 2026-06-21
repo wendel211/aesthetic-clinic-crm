@@ -93,6 +93,7 @@
 - Fluxo rapido em memoria para cadastrar cliente, criar agendamento e preparar confirmacao por WhatsApp.
 - Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
+- Fila de risco de falta e reagendamento com motivo, acao sugerida, horarios alternativos e CTA de WhatsApp.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
@@ -100,6 +101,7 @@
 - Persistir campanhas de reativacao e retornos recomendados.
 - Lembrete de confirmacao por WhatsApp.
 - Controle de faltas e reagendamento.
+- Persistir tentativas de confirmacao, risco de falta e horarios alternativos de reagendamento.
 - Ficha de anamnese por procedimento.
 - Antes/depois com imagens.
 - Comissoes por profissional.
