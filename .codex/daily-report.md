@@ -1,5 +1,27 @@
 # Relatorio Diario
 
+## 2026-06-21
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, repositorio GitHub e memoria da automacao.
+- Escolhida melhoria incremental para reduzir faltas e proteger agenda, sem depender de banco real.
+- Adicionado tipo e dados mockados para risco de falta e reagendamento, com motivo, horarios alternativos, mensagem sugerida e link de WhatsApp.
+- Criada a secao "Risco de falta e reagendamento" na tela operacional.
+- Atualizados backlog e estado do agente para refletir a nova superficie operacional e a proxima etapa de persistencia.
+
+### Validacao
+
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Risco de falta e reagendamento".
+
+### Proximo ciclo
+
+- Persistir cadastro rapido, fechamento de sessao, risco de falta e campanhas de reativacao quando houver `DATABASE_URL` de desenvolvimento.
+- Modelar tentativas de contato e eventos de reagendamento no Prisma antes de integrar WhatsApp real.
+
 ## 2026-06-20
 
 ### Feito

@@ -50,6 +50,19 @@ export type AttendanceClosingItem = {
   priority: "Consumir sessao" | "Cobrar hoje" | "Agendar retorno";
 };
 
+export type NoShowRiskItem = {
+  id: string;
+  client: string;
+  appointmentTime: string;
+  procedure: string;
+  reason: string;
+  suggestedAction: string;
+  fallbackSlots: string[];
+  template: string;
+  url: string;
+  tone: "Alto" | "Medio";
+};
+
 export type WhatsAppQueueItem = {
   id: string;
   client: string;
@@ -261,6 +274,37 @@ export const attendanceClosingItems: AttendanceClosingItem[] = [
     paymentStatus: "Receber R$ 420 no checkout",
     nextStep: "Criar lembrete de revisao para 21 dias.",
     priority: "Agendar retorno",
+  },
+];
+
+export const noShowRiskItems: NoShowRiskItem[] = [
+  {
+    id: "ns-1",
+    client: "Renata Nogueira",
+    appointmentTime: "14:20",
+    procedure: "Depilacao a laser perna inteira",
+    reason: "Confirmacao pendente e historico de resposta lenta no mesmo dia.",
+    suggestedAction:
+      "Enviar confirmacao curta agora e oferecer troca para 16:30 se nao puder vir.",
+    fallbackSlots: ["16:30", "18:10"],
+    template:
+      "Oi, Renata! Seu horario das 14h20 segue reservado. Consegue confirmar? Se apertar para hoje, tenho 16h30 como alternativa.",
+    url: "https://wa.me/5511911111111",
+    tone: "Alto",
+  },
+  {
+    id: "ns-2",
+    client: "Aline Mota",
+    appointmentTime: "Sem horario ativo",
+    procedure: "Drenagem pos-operatoria",
+    reason: "Faltou na ultima sessao e ainda tem saldo de pacote parado.",
+    suggestedAction:
+      "Oferecer dois horarios de almoco e reforcar que o pacote continua reservado.",
+    fallbackSlots: ["12:10", "12:50"],
+    template:
+      "Oi, Aline! Para nao esfriar seu resultado, separei 12h10 ou 12h50 para retomar sua drenagem. Qual fica melhor?",
+    url: "https://wa.me/5511933333333",
+    tone: "Medio",
   },
 ];
 
