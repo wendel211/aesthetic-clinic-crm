@@ -50,6 +50,18 @@ export type AttendanceClosingItem = {
   priority: "Consumir sessao" | "Cobrar hoje" | "Agendar retorno";
 };
 
+export type AnamnesisAlertItem = {
+  id: string;
+  client: string;
+  procedure: string;
+  appointmentTime: string;
+  status: "Pendente" | "Revisar" | "Liberada";
+  restriction: string;
+  pendingQuestion: string;
+  orientation: string;
+  url: string;
+};
+
 export type WhatsAppQueueItem = {
   id: string;
   client: string;
@@ -259,6 +271,45 @@ export const attendanceClosingItems: AttendanceClosingItem[] = [
     paymentStatus: "Receber R$ 420 no checkout",
     nextStep: "Criar lembrete de revisao para 21 dias.",
     priority: "Agendar retorno",
+  },
+];
+
+export const anamnesisAlertItems: AnamnesisAlertItem[] = [
+  {
+    id: "ana-1",
+    client: "Juliana Prado",
+    procedure: "Microagulhamento com drug delivery",
+    appointmentTime: "11:00",
+    status: "Pendente",
+    restriction: "Confirmar uso de acido nos ultimos 7 dias.",
+    pendingQuestion: "A cliente suspendeu retinoides antes do procedimento?",
+    orientation:
+      "Enviar pergunta pelo WhatsApp antes de liberar a sala e registrar resposta na ficha.",
+    url: "https://wa.me/5511955555555",
+  },
+  {
+    id: "ana-2",
+    client: "Renata Nogueira",
+    procedure: "Depilacao a laser perna inteira",
+    appointmentTime: "14:20",
+    status: "Revisar",
+    restriction: "Historico de pele sensivel informado na ultima visita.",
+    pendingQuestion: "Houve exposicao solar ou irritacao recente na area?",
+    orientation:
+      "Revisar com a profissional antes do disparo e remarcar se houver irritacao ativa.",
+    url: "https://wa.me/5511911111111",
+  },
+  {
+    id: "ana-3",
+    client: "Marina Costa",
+    procedure: "Limpeza de pele premium",
+    appointmentTime: "08:30",
+    status: "Liberada",
+    restriction: "Ficha atualizada no ultimo atendimento.",
+    pendingQuestion: "Sem pendencias criticas para hoje.",
+    orientation:
+      "Confirmar apenas produtos usados em casa e seguir atendimento conforme protocolo.",
+    url: "https://wa.me/5511966666666",
   },
 ];
 

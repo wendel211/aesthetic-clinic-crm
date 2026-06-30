@@ -59,6 +59,7 @@
 - Criar agenda de procedimentos com formularios persistidos.
 - Persistir controle de pacotes, sessoes restantes e fechamento de atendimento.
 - Criar historico de atendimentos.
+- Persistir alertas de anamnese e liberar atendimento com base em respostas atualizadas.
 - Criar migration inicial PostgreSQL a partir do schema Prisma.
 - Conectar os formularios da tela operacional ao Prisma.
 
@@ -93,6 +94,7 @@
 - Fluxo rapido em memoria para cadastrar cliente, criar agendamento e preparar confirmacao por WhatsApp.
 - Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
+- Alertas de anamnese pre-atendimento em memoria, com pendencia, restricao, orientacao e CTA de WhatsApp.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
@@ -100,7 +102,7 @@
 - Persistir campanhas de reativacao e retornos recomendados.
 - Lembrete de confirmacao por WhatsApp.
 - Controle de faltas e reagendamento.
-- Ficha de anamnese por procedimento.
+- Ficha de anamnese por procedimento com bloqueio operacional antes de procedimentos sensiveis.
 - Antes/depois com imagens.
 - Comissoes por profissional.
 - Dashboard de faturamento, agenda e retorno.

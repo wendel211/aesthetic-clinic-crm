@@ -1,5 +1,32 @@
 # Relatorio Diario
 
+## 2026-06-30
+
+### Feito
+
+- Avaliado o estado atual do projeto, memoria da automacao, backlog e arquivos operacionais em `.codex/`.
+- Escolhida melhoria incremental de seguranca operacional antes do atendimento, sem dependencia de banco ou servico externo.
+- Adicionados dados tipados para alertas de anamnese com status, restricao, pergunta pendente, orientacao e link de WhatsApp.
+- Criada a secao "Alertas de anamnese" na tela operacional, antes da agenda do dia, para a recepcao validar pendencias antes de procedimentos sensiveis.
+- Atualizados `.codex/backlog.md` e `.codex/agent-state.md` para refletir o novo bloco e a proxima persistencia.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Alertas de anamnese".
+
+### Observacoes
+
+- `npm ci` reportou 5 vulnerabilidades moderadas herdadas nas dependencias; nao foram corrigidas automaticamente para evitar alteracao ampla ou breaking change neste ciclo.
+
+### Proximo ciclo
+
+- Persistir alertas de anamnese por cliente, procedimento e agendamento.
+- Criar fluxo para marcar anamnese como revisada/liberada quando houver persistencia.
+
 ## 2026-06-19
 
 ### Feito
