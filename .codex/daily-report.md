@@ -1,5 +1,29 @@
 # Relatorio Diario
 
+## 2026-07-01
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, decisoes e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental de recuperacao de faltas e cancelamentos recentes, sem depender de banco real.
+- Adicionados dados tipados para faltas recentes com impacto em pacote, risco de receita, sugestao de encaixe e mensagem de WhatsApp.
+- Criada a secao "Recuperacao de faltas" na tela operacional, com contador de contatos pendentes e botao para marcar contato feito em memoria.
+- Incluido cancelamento recente na fila geral de WhatsApp para manter a rotina da recepcao em um so painel.
+
+### Validacao
+
+- `npm install` para restaurar dependencias ausentes no worktree.
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Recuperacao de faltas".
+- Tentativa de verificacao visual com navegador automatizado falhou por timeout de 300s ao navegar para `http://127.0.0.1:3000`.
+
+### Proximo ciclo
+
+- Persistir recuperacao de faltas, contato feito e reagendamento quando houver `DATABASE_URL` de desenvolvimento.
+- Conectar faltas reais da agenda ao fluxo de WhatsApp e aos indicadores de receita/pacote.
+
 ## 2026-06-19
 
 ### Feito

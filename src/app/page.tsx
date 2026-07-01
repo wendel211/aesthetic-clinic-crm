@@ -10,6 +10,7 @@ import {
   clientFocusItems,
   followUpItems,
   navigationItems,
+  noShowRecoveryItems,
   overviewMetrics,
   packageHealthItems,
   priorityItems,
@@ -57,6 +58,14 @@ const retentionToneClassName: Record<
 > = {
   Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const noShowPriorityClassName: Record<
+  (typeof noShowRecoveryItems)[number]["priority"],
+  string
+> = {
+  Hoje: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  "Esta semana": "bg-[var(--accent-soft)] text-[var(--accent)]",
 };
 
 type QuickFlowForm = {
@@ -145,6 +154,7 @@ export default function Home() {
     WhatsAppQueueItem[]
   >([]);
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
+  const [contactedNoShowIds, setContactedNoShowIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -160,6 +170,9 @@ export default function Home() {
   const completedClosingCount = completedClosingIds.length;
   const pendingClosingCount =
     attendanceClosingItems.length - completedClosingCount;
+  const recoveredNoShowCount = contactedNoShowIds.length;
+  const pendingNoShowCount =
+    noShowRecoveryItems.length - recoveredNoShowCount;
   const quickFlowTemplate = buildConfirmationTemplate({
     client: quickFlowForm.client,
     procedure: quickFlowForm.procedure,
@@ -241,6 +254,14 @@ export default function Home() {
     setCompletedClosingIds((current) =>
       current.includes(id)
         ? current.filter((completedId) => completedId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleNoShowContact(id: string) {
+    setContactedNoShowIds((current) =>
+      current.includes(id)
+        ? current.filter((contactedId) => contactedId !== id)
         : [...current, id],
     );
   }
@@ -676,6 +697,93 @@ export default function Home() {
                       </p>
                     </article>
                   ))}
+                </div>
+              </section>
+
+              <section
+                id="faltas"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
+                <SectionHeading
+                  title="Recuperacao de faltas"
+                  description="Fila curta para reagendar faltas e cancelamentos recentes antes que pacote, validade e receita escapem da agenda."
+                />
+
+                <div className="mt-5 flex flex-col gap-3 rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    Reagendamentos pendentes
+                  </span>
+                  <span className="font-mono text-sm text-[var(--muted)]">
+                    {pendingNoShowCount} abertos / {recoveredNoShowCount} contatos feitos
+                  </span>
+                </div>
+
+                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                  {noShowRecoveryItems.map((item) => {
+                    const isContacted = contactedNoShowIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-5 transition-colors ${
+                          isContacted
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="text-lg font-semibold tracking-[-0.03em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm text-[var(--muted)]">
+                              {item.missedAt}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${noShowPriorityClassName[item.priority]}`}
+                          >
+                            {item.priority}
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.procedure}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.packageImpact}</p>
+                          <p className="text-[var(--foreground)]">{item.revenueRisk}</p>
+                          <p className="text-[var(--muted)]">{item.suggestedSlot}</p>
+                        </div>
+
+                        <p className="mt-4 rounded-[1.2rem] bg-[var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[var(--foreground)]">
+                          {item.template}
+                        </p>
+
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Reagendar no WhatsApp
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isContacted
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleNoShowContact(item.id)}
+                            type="button"
+                          >
+                            {isContacted ? "Contato feito" : "Marcar contato"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
             </div>
