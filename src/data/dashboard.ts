@@ -37,6 +37,10 @@ export type FollowUpItem = {
   client: string;
   reason: string;
   targetDate: string;
+  opportunity: string;
+  template: string;
+  url: string;
+  tone: "Alta" | "Media";
 };
 
 export type AttendanceClosingItem = {
@@ -214,18 +218,33 @@ export const followUpItems: FollowUpItem[] = [
     client: "Juliana Prado",
     reason: "Revisao de microagulhamento",
     targetDate: "Recomendar agenda ate 28/06",
+    opportunity: "Retorno tecnico para avaliar pele e vender continuidade.",
+    template:
+      "Oi, Juliana! Sua revisao do microagulhamento ja esta na janela ideal. Quer que eu reserve um horario esta semana?",
+    url: "https://wa.me/5511955555555",
+    tone: "Alta",
   },
   {
     id: "fu-2",
     client: "Paula Siqueira",
     reason: "Manutencao de toxina",
     targetDate: "Retomar contato em 3 dias",
+    opportunity: "Manutencao recorrente com boa chance de novo pacote.",
+    template:
+      "Oi, Paula! Ja estamos na fase ideal para programar sua manutencao. Posso te passar duas opcoes de horario?",
+    url: "https://wa.me/5511922222222",
+    tone: "Alta",
   },
   {
     id: "fu-3",
     client: "Fernanda Melo",
     reason: "Fechamento de novo pacote corporal",
     targetDate: "Confirmar interesse apos a sessao de sexta",
+    opportunity: "Cliente com intencao de compra e timing de renovacao.",
+    template:
+      "Oi, Fernanda! Separei uma condicao para voce continuar o pacote corporal sem pausa. Quer que eu te envie?",
+    url: "https://wa.me/5511966666666",
+    tone: "Media",
   },
 ];
 
