@@ -157,6 +157,7 @@ export default function Home() {
   >([]);
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
   const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
+  const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -177,6 +178,12 @@ export default function Home() {
   ).length;
   const highPriorityWhatsAppCount = whatsAppQueueList.filter(
     (item) => item.priority === "Alta" && !sentWhatsAppIds.includes(item.id),
+  ).length;
+  const activatedCampaignCount = activatedCampaignIds.length;
+  const pendingCampaignCount =
+    retentionCampaignItems.length - activatedCampaignCount;
+  const highPriorityPendingCampaignCount = retentionCampaignItems.filter(
+    (item) => item.tone === "Alta" && !activatedCampaignIds.includes(item.id),
   ).length;
   const quickFlowTemplate = buildConfirmationTemplate({
     client: quickFlowForm.client,
@@ -269,6 +276,14 @@ export default function Home() {
     setSentWhatsAppIds((current) =>
       current.includes(id)
         ? current.filter((sentId) => sentId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleRetentionCampaign(id: string) {
+    setActivatedCampaignIds((current) =>
+      current.includes(id)
+        ? current.filter((campaignId) => campaignId !== id)
         : [...current, id],
     );
   }
@@ -1018,46 +1033,96 @@ export default function Home() {
                   description="Carteira curta de clientes paradas ou em risco, com oferta objetiva para recuperar agenda e recorrencia pelo WhatsApp."
                 />
 
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      A acionar
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingCampaignCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Alta prioridade
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {highPriorityPendingCampaignCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Acionadas
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {activatedCampaignCount}
+                    </strong>
+                  </div>
+                </div>
+
                 <div className="mt-6 space-y-4">
-                  {retentionCampaignItems.map((item) => (
-                    <article
-                      key={item.id}
-                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-4"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1">
-                          <h3 className="font-semibold tracking-[-0.02em]">
-                            {item.client}
-                          </h3>
-                          <p className="text-sm text-[var(--muted)]">
-                            {item.segment} - {item.daysWithoutVisit} dias sem visita
-                          </p>
-                        </div>
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${retentionToneClassName[item.tone]}`}
-                        >
-                          {item.tone} prioridade
-                        </span>
-                      </div>
+                  {retentionCampaignItems.map((item) => {
+                    const isActivated = activatedCampaignIds.includes(item.id);
 
-                      <div className="mt-4 space-y-2 text-sm leading-6">
-                        <p className="font-medium text-[var(--foreground)]">
-                          {item.revenueRisk}
-                        </p>
-                        <p className="text-[var(--muted)]">{item.offer}</p>
-                        <p className="text-[var(--foreground)]">{item.template}</p>
-                      </div>
-
-                      <a
-                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
-                        href={item.url}
-                        rel="noreferrer"
-                        target="_blank"
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isActivated
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
+                        }`}
                       >
-                        Reativar pelo WhatsApp
-                      </a>
-                    </article>
-                  ))}
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm text-[var(--muted)]">
+                              {item.segment} - {item.daysWithoutVisit} dias sem visita
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${retentionToneClassName[item.tone]}`}
+                          >
+                            {item.tone} prioridade
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.revenueRisk}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.offer}</p>
+                          <p className="text-[var(--foreground)]">{item.template}</p>
+                        </div>
+
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Reativar pelo WhatsApp
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isActivated
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleRetentionCampaign(item.id)}
+                            type="button"
+                          >
+                            {isActivated
+                              ? "Campanha acionada"
+                              : "Marcar como acionada"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
             </div>

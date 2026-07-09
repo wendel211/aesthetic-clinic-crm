@@ -22,6 +22,7 @@ Foi adicionado um bloco de fechamento de sessao para a equipe marcar consumo de 
 Foi adicionada a base inicial de persistencia com Prisma 7 e schema PostgreSQL multiempresa para clientes, profissionais, procedimentos, pacotes, sessoes, agenda, anamnese, atendimentos, pagamentos e comissoes.
 Foi adicionada uma central de confirmacao por WhatsApp em memoria, com prioridade, prazo sugerido, contadores de pendencias e botao para marcar contato enviado.
 Foi adicionada uma central de campanhas de reativacao por WhatsApp, ainda mockada, para priorizar clientes paradas ou em risco com oferta sugerida e link de contato.
+Foi adicionado controle em memoria para marcar campanhas de reativacao acionadas, com contadores de pendentes, alta prioridade e acionadas.
 Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do risco, horarios alternativos e mensagem pronta por WhatsApp para proteger a agenda do dia.
 
 Ainda pendente:
@@ -31,6 +32,7 @@ Ainda pendente:
 - Criar migrations quando houver `DATABASE_URL` real configurada.
 - Conectar formularios e cards operacionais ao Prisma.
 - Persistir status de mensagens enviadas, respostas de confirmacao e reagendamentos.
+- Persistir status de campanha acionada, resposta recebida e nova tentativa de reativacao.
 - Configurar testes automatizados quando a primeira camada de regras estiver pronta.
 
 ## Preferencia atual de ciclo
