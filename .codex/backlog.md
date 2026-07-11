@@ -61,6 +61,7 @@
 - Criar historico de atendimentos.
 - Criar migration inicial PostgreSQL a partir do schema Prisma.
 - Conectar os formularios da tela operacional ao Prisma.
+- Persistir ofertas de renovacao, proposta apresentada e aceite/recusa.
 
 ## Arquitetura de dados
 
@@ -95,11 +96,13 @@
 - Central de confirmacao por WhatsApp em memoria com prioridade, prazo sugerido, contadores de pendencias e marcacao de contato enviado.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
 - Fila de risco de falta e reagendamento com motivo, acao sugerida, horarios alternativos e CTA de WhatsApp.
+- Ofertas de renovacao de pacotes em memoria, com valor sugerido, argumento comercial, proximo passo, mensagem de WhatsApp e marcacao de proposta apresentada.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
 
 - Persistir campanhas de reativacao e retornos recomendados.
+- Persistir ofertas de renovacao e resultado da negociacao.
 - Lembrete de confirmacao por WhatsApp.
 - Controle de faltas e reagendamento.
 - Persistir tentativas de confirmacao, risco de falta e horarios alternativos de reagendamento.

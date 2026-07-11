@@ -32,6 +32,20 @@ export type PackageHealthItem = {
   status: "Renovar agora" | "Acompanhar" | "Saudavel";
 };
 
+export type RenewalOfferItem = {
+  id: string;
+  client: string;
+  procedure: string;
+  currentBalance: string;
+  suggestedPackage: string;
+  price: string;
+  argument: string;
+  nextStep: string;
+  template: string;
+  url: string;
+  tone: "Alta" | "Media";
+};
+
 export type FollowUpItem = {
   id: string;
   client: string;
@@ -120,7 +134,7 @@ export const overviewMetrics: OverviewMetric[] = [
   {
     label: "Pacotes em alerta",
     value: "5",
-    detail: "Clientes com saldo curto ou validade proxima.",
+    detail: "Clientes com saldo curto, validade proxima ou renovacao pronta.",
   },
   {
     label: "Retornos em 7 dias",
@@ -220,6 +234,39 @@ export const packageHealthItems: PackageHealthItem[] = [
     remainingSessions: "7 de 10",
     expiresAt: "Validade em 61 dias",
     status: "Saudavel",
+  },
+];
+
+export const renewalOfferItems: RenewalOfferItem[] = [
+  {
+    id: "ren-1",
+    client: "Bianca Alves",
+    procedure: "Laser para axilas",
+    currentBalance: "Ultima sessao hoje",
+    suggestedPackage: "Renovar 10 sessoes com preco travado",
+    price: "R$ 890",
+    argument:
+      "Cliente ja chega para encerrar o pacote; a proposta evita intervalo longo entre ciclos.",
+    nextStep: "Apresentar oferta no checkout antes de finalizar o atendimento.",
+    template:
+      "Bianca, para voce nao perder o ritmo do laser, consigo deixar seu novo pacote de 10 sessoes com o mesmo valor de hoje. Quer que eu reserve?",
+    url: "https://wa.me/5511955555555",
+    tone: "Alta",
+  },
+  {
+    id: "ren-2",
+    client: "Marina Costa",
+    procedure: "Pacote facial premium",
+    currentBalance: "3 de 6 sessoes restantes",
+    suggestedPackage: "Upgrade para 8 sessoes com manutencao mensal",
+    price: "R$ 1.240",
+    argument:
+      "Ainda ha saldo suficiente para vender upgrade sem parecer urgencia artificial.",
+    nextStep: "Sinalizar para a Dra. Larissa mencionar o plano no fim da sessao.",
+    template:
+      "Marina, a Dra. Larissa comentou que seu resultado esta evoluindo bem. Posso te mostrar a opcao de upgrade para manter a rotina mensal?",
+    url: "https://wa.me/5511966666666",
+    tone: "Media",
   },
 ];
 
@@ -381,6 +428,9 @@ const pendingConfirmations = agendaItems.filter((item) => item.status === "Aguar
 const renewalCandidates = packageHealthItems.filter(
   (item) => item.status === "Renovar agora",
 );
+const highPriorityRenewalOffers = renewalOfferItems.filter(
+  (item) => item.tone === "Alta",
+);
 const sameDayRenewal = renewalCandidates.find((item) =>
   agendaItems.some((agendaItem) => agendaItem.client === item.client),
 );
@@ -406,17 +456,17 @@ export const priorityItems: PriorityItem[] = [
   },
   {
     id: "prio-2",
-    badge: `${renewalCandidates.length} pacote em renovacao`,
+    badge: `${highPriorityRenewalOffers.length} oferta pronta`,
     title: "Fechar pacote antes da ultima sessao",
     detail:
       sameDayRenewal && sameDayRenewalAppointment
         ? `${sameDayRenewal.client} chega hoje para ${sameDayRenewalAppointment.procedure.toLowerCase()} com a ultima sessao ativa.`
         : "Existe pacote em fase de renovacao e vale preparar a proposta ainda hoje.",
     recommendation:
-      "Deixe uma oferta pronta na recepcao com opcao de upgrade ou reposicao imediata.",
+      "Use a oferta sugerida para apresentar valor, argumento e proximo passo antes do checkout.",
     impact: "Aumenta recorrencia e reduz perda de receita por espera.",
     href: "#pacotes",
-    hrefLabel: "Ver pacotes em alerta",
+    hrefLabel: "Ver ofertas de renovacao",
     tone: "Alta",
   },
   {
