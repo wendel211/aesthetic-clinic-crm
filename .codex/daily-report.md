@@ -1,5 +1,36 @@
 # Relatorio Diario
 
+## 2026-07-16
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, memoria operacional e repositorio GitHub.
+- Escolhida melhoria incremental para transformar retornos recomendados em acao comercial direta, sem depender de banco real.
+- Adicionados prioridade, janela sugerida, mensagem pronta e link de WhatsApp aos retornos mockados.
+- Atualizada a secao "Retornos recomendados" com contadores de pendentes, alta prioridade e agendados.
+- Implementada marcacao em memoria de retorno agendado, com estado visual de conclusao.
+- Criada branch `feat/acao-retornos` para publicar a entrega.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- Servidor local `npm run dev -- --hostname 127.0.0.1 --port 3000`
+- Playwright abriu `http://127.0.0.1:3000`, capturou snapshot e screenshot sem overlay de erro.
+- `curl.exe` retornou HTTP 200 e confirmou textos da secao: "Retornos recomendados", "Chamar no WhatsApp", "Marcar retorno" e "Juliana Prado".
+
+### Observacoes
+
+- `npm ci` reportou 5 vulnerabilidades moderadas em dependencias instaladas.
+- `Invoke-WebRequest` falhou com uma excecao interna do PowerShell; a verificacao HTTP foi repetida com `curl.exe`.
+
+### Proximo ciclo
+
+- Persistir retorno agendado, origem do contato e proxima data sugerida no Prisma quando houver banco de desenvolvimento.
+- Conectar retornos recomendados com o fechamento de sessao para gerar a proxima agenda automaticamente.
+
 ## 2026-06-21
 
 ### Feito

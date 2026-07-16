@@ -37,6 +37,10 @@ export type FollowUpItem = {
   client: string;
   reason: string;
   targetDate: string;
+  suggestedSlot: string;
+  template: string;
+  url: string;
+  priority: "Alta" | "Media";
 };
 
 export type AttendanceClosingItem = {
@@ -229,18 +233,33 @@ export const followUpItems: FollowUpItem[] = [
     client: "Juliana Prado",
     reason: "Revisao de microagulhamento",
     targetDate: "Recomendar agenda ate 28/06",
+    suggestedSlot: "Quinta 10:30 ou sexta 15:20",
+    template:
+      "Oi, Juliana! Sua revisao do microagulhamento ja esta na janela ideal. Posso reservar quinta 10h30 ou sexta 15h20 para avaliarmos o resultado?",
+    url: "https://wa.me/5511955555555",
+    priority: "Alta",
   },
   {
     id: "fu-2",
     client: "Paula Siqueira",
     reason: "Manutencao de toxina",
     targetDate: "Retomar contato em 3 dias",
+    suggestedSlot: "Avaliacao rapida na terca 11:40",
+    template:
+      "Oi, Paula! Ja podemos programar sua manutencao de toxina. Tenho uma avaliacao rapida na terca 11h40, quer que eu deixe separado?",
+    url: "https://wa.me/5511922222222",
+    priority: "Alta",
   },
   {
     id: "fu-3",
     client: "Fernanda Melo",
     reason: "Fechamento de novo pacote corporal",
     targetDate: "Confirmar interesse apos a sessao de sexta",
+    suggestedSlot: "Conversa de renovacao apos a sessao",
+    template:
+      "Oi, Fernanda! Depois da sua sessao de sexta, posso te mostrar a melhor opcao para manter o pacote corporal sem perder o intervalo.",
+    url: "https://wa.me/5511966666666",
+    priority: "Media",
   },
 ];
 
