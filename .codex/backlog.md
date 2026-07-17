@@ -58,6 +58,7 @@
 - Persistir o cadastro rapido de clientes e agendamentos.
 - Criar agenda de procedimentos com formularios persistidos.
 - Persistir controle de pacotes, sessoes restantes e fechamento de atendimento.
+- Persistir regua de renovacao de pacotes, proposta apresentada e resultado comercial.
 - Criar historico de atendimentos.
 - Criar migration inicial PostgreSQL a partir do schema Prisma.
 - Conectar os formularios da tela operacional ao Prisma.
@@ -95,10 +96,12 @@
 - Central de confirmacao por WhatsApp em memoria com prioridade, prazo sugerido, contadores de pendencias e marcacao de contato enviado.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
 - Fila de risco de falta e reagendamento com motivo, acao sugerida, horarios alternativos e CTA de WhatsApp.
+- Regua de renovacao de pacotes com receita em aberto, proposta pronta, CTA de WhatsApp e marcacao em memoria de proposta apresentada.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
 
+- Persistir propostas de renovacao, aceite/recusa e motivo quando a cliente nao fechar.
 - Persistir campanhas de reativacao e retornos recomendados.
 - Lembrete de confirmacao por WhatsApp.
 - Controle de faltas e reagendamento.

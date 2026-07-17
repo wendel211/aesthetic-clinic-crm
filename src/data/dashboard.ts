@@ -32,6 +32,19 @@ export type PackageHealthItem = {
   status: "Renovar agora" | "Acompanhar" | "Saudavel";
 };
 
+export type PackageRenewalItem = {
+  id: string;
+  client: string;
+  packageName: string;
+  trigger: string;
+  projectedValue: string;
+  offer: string;
+  nextAction: string;
+  template: string;
+  url: string;
+  tone: "Alta" | "Media";
+};
+
 export type FollowUpItem = {
   id: string;
   client: string;
@@ -220,6 +233,35 @@ export const packageHealthItems: PackageHealthItem[] = [
     remainingSessions: "7 de 10",
     expiresAt: "Validade em 61 dias",
     status: "Saudavel",
+  },
+];
+
+export const packageRenewalItems: PackageRenewalItem[] = [
+  {
+    id: "ren-1",
+    client: "Bianca Alves",
+    packageName: "Laser para axilas",
+    trigger: "Ultima sessao hoje e historico de renovacao imediata.",
+    projectedValue: "R$ 890",
+    offer: "Renovar pacote de 10 sessoes com manutencao sem reajuste.",
+    nextAction: "Apresentar proposta no checkout antes da cliente sair.",
+    template:
+      "Oi, Bianca! Como hoje e sua ultima sessao, deixei pronta a renovacao do laser sem reajuste. Quer garantir o proximo pacote?",
+    url: "https://wa.me/5511955555555",
+    tone: "Alta",
+  },
+  {
+    id: "ren-2",
+    client: "Marina Costa",
+    packageName: "Pacote facial premium",
+    trigger: "Saldo medio, mas validade entra em alerta nos proximos 30 dias.",
+    projectedValue: "R$ 1.140",
+    offer: "Upgrade para 8 sessoes com retorno mensal ja reservado.",
+    nextAction: "Comentar na recepcao e deixar retorno sugerido no WhatsApp.",
+    template:
+      "Oi, Marina! Para manter seu resultado em dia, consigo deixar seu retorno mensal reservado e avaliar o upgrade do pacote facial. Te mando as opcoes?",
+    url: "https://wa.me/5511966666666",
+    tone: "Media",
   },
 ];
 

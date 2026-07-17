@@ -13,6 +13,7 @@ import {
   noShowRiskItems,
   overviewMetrics,
   packageHealthItems,
+  packageRenewalItems,
   priorityItems,
   retentionCampaignItems,
   type WhatsAppQueueItem,
@@ -68,6 +69,14 @@ const retentionToneClassName: Record<
 const noShowToneClassName: Record<(typeof noShowRiskItems)[number]["tone"], string> = {
   Alto: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Medio: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const renewalToneClassName: Record<
+  (typeof packageRenewalItems)[number]["tone"],
+  string
+> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 type QuickFlowForm = {
@@ -157,6 +166,7 @@ export default function Home() {
   >([]);
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
   const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
+  const [offeredRenewalIds, setOfferedRenewalIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -170,6 +180,10 @@ export default function Home() {
     [createdWhatsAppItems],
   );
   const completedClosingCount = completedClosingIds.length;
+  const offeredRenewalCount = offeredRenewalIds.length;
+  const pendingRenewalValue = packageRenewalItems
+    .filter((item) => !offeredRenewalIds.includes(item.id))
+    .reduce((total, item) => total + Number(item.projectedValue.replace(/\D/g, "")), 0);
   const pendingClosingCount =
     attendanceClosingItems.length - completedClosingCount;
   const pendingWhatsAppCount = whatsAppQueueList.filter(
@@ -269,6 +283,14 @@ export default function Home() {
     setSentWhatsAppIds((current) =>
       current.includes(id)
         ? current.filter((sentId) => sentId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleRenewalOffered(id: string) {
+    setOfferedRenewalIds((current) =>
+      current.includes(id)
+        ? current.filter((offeredId) => offeredId !== id)
         : [...current, id],
     );
   }
@@ -747,6 +769,96 @@ export default function Home() {
                       </div>
                     </article>
                   ))}
+                </div>
+              </section>
+
+              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface-strong)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Regua de renovacao"
+                  description="Propostas prontas para transformar saldo curto em nova venda antes da cliente sair da clinica."
+                />
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Propostas feitas
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {offeredRenewalCount} de {packageRenewalItems.length}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Receita em aberto
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      R$ {pendingRenewalValue.toLocaleString("pt-BR")}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  {packageRenewalItems.map((item) => {
+                    const isOffered = offeredRenewalIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isOffered
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-white"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm leading-6 text-[var(--muted)]">
+                              {item.packageName} - {item.projectedValue}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${renewalToneClassName[item.tone]}`}
+                          >
+                            {item.tone} chance
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="text-[var(--foreground)]">{item.trigger}</p>
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.offer}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.nextAction}</p>
+                          <p className="text-[var(--foreground)]">{item.template}</p>
+                        </div>
+
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Enviar proposta
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isOffered
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleRenewalOffered(item.id)}
+                            type="button"
+                          >
+                            {isOffered ? "Proposta apresentada" : "Marcar proposta"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
 

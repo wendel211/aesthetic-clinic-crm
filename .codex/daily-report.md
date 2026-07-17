@@ -1,5 +1,29 @@
 # Relatorio Diario
 
+## 2026-07-17
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, memoria da automacao e repositorio GitHub.
+- Escolhida melhoria incremental para aumentar renovacao de pacotes antes da ultima sessao, sem depender de banco ou integracao real de WhatsApp.
+- Adicionados dados mockados tipados para regua de renovacao com gatilho, valor previsto, oferta, proxima acao e mensagem pronta.
+- Criada a secao "Regua de renovacao" na tela operacional, com contadores de propostas feitas, receita em aberto, CTA de WhatsApp e marcacao em memoria de proposta apresentada.
+- Atualizados backlog e estado do agente para refletir a nova superficie operacional e a futura persistencia de propostas.
+
+### Validacao
+
+- `npm ci` instalou dependencias; o npm reportou 5 vulnerabilidades moderadas.
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Regua de renovacao".
+- Playwright nao foi usado por solicitacao explicita deste ciclo.
+
+### Proximo ciclo
+
+- Persistir propostas de renovacao apresentadas, aceite/recusa e valor previsto por pacote quando houver `DATABASE_URL` de desenvolvimento.
+- Conectar a regua de renovacao ao fechamento de sessao e ao historico comercial da cliente.
+
 ## 2026-06-21
 
 ### Feito
