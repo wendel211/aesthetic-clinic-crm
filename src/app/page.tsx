@@ -5,16 +5,20 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   agendaItems,
   type AgendaItem,
+  anamnesisAlertItems,
   attendanceClosingItems,
   type ClientFocusItem,
   clientFocusItems,
   followUpItems,
   navigationItems,
+  noShowRecoveryItems,
   noShowRiskItems,
   overviewMetrics,
   packageHealthItems,
+  professionalPerformanceItems,
   priorityItems,
   retentionCampaignItems,
+  renewalOfferItems,
   type WhatsAppQueueItem,
   whatsAppQueueItems,
 } from "@/data/dashboard";
@@ -38,14 +42,6 @@ const packageStatusClassName: Record<
   Saudavel: "text-[var(--success)]",
 };
 
-const followUpPriorityClassName: Record<
-  (typeof followUpItems)[number]["priority"],
-  string
-> = {
-  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
-  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
-};
-
 const priorityToneClassName: Record<(typeof priorityItems)[number]["tone"], string> = {
   Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
@@ -58,6 +54,15 @@ const closingPriorityClassName: Record<
   "Agendar retorno": "bg-[var(--accent-soft)] text-[var(--accent)]",
   "Cobrar hoje": "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   "Consumir sessao": "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+};
+
+const anamnesisStatusClassName: Record<
+  (typeof anamnesisAlertItems)[number]["status"],
+  string
+> = {
+  Liberada: "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+  Pendente: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Revisar: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 const whatsAppPriorityClassName: Record<WhatsAppQueueItem["priority"], string> = {
@@ -73,9 +78,42 @@ const retentionToneClassName: Record<
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
+const followUpToneClassName: Record<
+  (typeof followUpItems)[number]["tone"],
+  string
+> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const noShowPriorityClassName: Record<
+  (typeof noShowRecoveryItems)[number]["priority"],
+  string
+> = {
+  Hoje: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  "Esta semana": "bg-[var(--accent-soft)] text-[var(--accent)]",
+};
+
 const noShowToneClassName: Record<(typeof noShowRiskItems)[number]["tone"], string> = {
   Alto: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Medio: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const professionalStatusClassName: Record<
+  (typeof professionalPerformanceItems)[number]["status"],
+  string
+> = {
+  "Acima da meta": "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+  Acompanhar: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+  "Precisa acao": "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+};
+
+const renewalOfferToneClassName: Record<
+  (typeof renewalOfferItems)[number]["tone"],
+  string
+> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 type QuickFlowForm = {
@@ -164,8 +202,11 @@ export default function Home() {
     WhatsAppQueueItem[]
   >([]);
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
+  const [contactedNoShowIds, setContactedNoShowIds] = useState<string[]>([]);
   const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
   const [scheduledFollowUpIds, setScheduledFollowUpIds] = useState<string[]>([]);
+  const [presentedRenewalIds, setPresentedRenewalIds] = useState<string[]>([]);
+  const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -187,11 +228,26 @@ export default function Home() {
     (item) =>
       item.priority === "Alta" && !scheduledFollowUpIds.includes(item.id),
   ).length;
+  const recoveredNoShowCount = contactedNoShowIds.length;
+  const pendingNoShowCount =
+    noShowRecoveryItems.length - recoveredNoShowCount;
   const pendingWhatsAppCount = whatsAppQueueList.filter(
     (item) => !sentWhatsAppIds.includes(item.id),
   ).length;
   const highPriorityWhatsAppCount = whatsAppQueueList.filter(
     (item) => item.priority === "Alta" && !sentWhatsAppIds.includes(item.id),
+  ).length;
+  const pendingRenewalOfferCount =
+    renewalOfferItems.length - presentedRenewalIds.length;
+  const renewalPipelineValue = renewalOfferItems
+    .filter((item) => !presentedRenewalIds.includes(item.id))
+    .map((item) => Number(item.price.replace(/\D/g, "")))
+    .reduce((total, value) => total + value, 0);
+  const activatedCampaignCount = activatedCampaignIds.length;
+  const pendingCampaignCount =
+    retentionCampaignItems.length - activatedCampaignCount;
+  const highPriorityPendingCampaignCount = retentionCampaignItems.filter(
+    (item) => item.tone === "Alta" && !activatedCampaignIds.includes(item.id),
   ).length;
   const quickFlowTemplate = buildConfirmationTemplate({
     client: quickFlowForm.client,
@@ -280,6 +336,14 @@ export default function Home() {
     );
   }
 
+  function toggleNoShowContact(id: string) {
+    setContactedNoShowIds((current) =>
+      current.includes(id)
+        ? current.filter((contactedId) => contactedId !== id)
+        : [...current, id],
+    );
+  }
+
   function toggleWhatsAppSent(id: string) {
     setSentWhatsAppIds((current) =>
       current.includes(id)
@@ -292,6 +356,22 @@ export default function Home() {
     setScheduledFollowUpIds((current) =>
       current.includes(id)
         ? current.filter((scheduledId) => scheduledId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleRenewalPresented(id: string) {
+    setPresentedRenewalIds((current) =>
+      current.includes(id)
+        ? current.filter((presentedId) => presentedId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleRetentionCampaign(id: string) {
+    setActivatedCampaignIds((current) =>
+      current.includes(id)
+        ? current.filter((campaignId) => campaignId !== id)
         : [...current, id],
     );
   }
@@ -644,6 +724,60 @@ export default function Home() {
 
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
             <div className="space-y-6">
+              <section className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Alertas de anamnese"
+                  description="Checagem rapida antes do atendimento para reduzir risco operacional em procedimentos sensiveis."
+                />
+
+                <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                  {anamnesisAlertItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <p className="font-mono text-xs text-[var(--muted)]">
+                            {item.appointmentTime}
+                          </p>
+                          <h3 className="text-lg font-semibold tracking-[-0.03em]">
+                            {item.client}
+                          </h3>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${anamnesisStatusClassName[item.status]}`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.procedure}
+                      </p>
+                      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                        {item.restriction}
+                      </p>
+                      <p className="mt-4 rounded-[1.2rem] bg-[var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[var(--foreground)]">
+                        {item.pendingQuestion}
+                      </p>
+                      <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
+                        {item.orientation}
+                      </p>
+
+                      <a
+                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                        href={item.url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Validar pelo WhatsApp
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
               <section
                 id="agenda"
                 className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
@@ -729,6 +863,158 @@ export default function Home() {
                   ))}
                 </div>
               </section>
+
+              <section
+                id="produtividade"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
+                <SectionHeading
+                  title="Comissoes e produtividade"
+                  description="Leitura rapida para a dona acompanhar producao do dia, repasse previsto e onde a equipe precisa agir antes do fechamento."
+                />
+
+                <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                  {professionalPerformanceItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <h3 className="text-lg font-semibold tracking-[-0.03em]">
+                            {item.professional}
+                          </h3>
+                          <p className="text-sm text-[var(--muted)]">
+                            {item.specialty}
+                          </p>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${professionalStatusClassName[item.status]}`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <div className="mt-5 grid gap-3 text-sm">
+                        <div className="rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3">
+                          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">
+                            Producao
+                          </p>
+                          <strong className="mt-2 block text-xl font-semibold tracking-[-0.04em]">
+                            {item.projectedRevenue}
+                          </strong>
+                          <p className="mt-1 text-[var(--muted)]">
+                            {item.appointmentsToday} atendimentos hoje
+                          </p>
+                        </div>
+                        <div className="rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3">
+                          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">
+                            Repasse
+                          </p>
+                          <p className="mt-2 font-medium text-[var(--foreground)]">
+                            {item.commissionPreview}
+                          </p>
+                          <p className="mt-1 text-[var(--muted)]">{item.occupancy}</p>
+                        </div>
+                      </div>
+
+                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.packagesSold}
+                      </p>
+                      <p className="mt-3 border-t border-[var(--line)] pt-4 text-sm leading-6 text-[var(--muted)]">
+                        {item.nextAction}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section
+                id="recuperacao-faltas"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
+                <SectionHeading
+                  title="Recuperacao de faltas"
+                  description="Fila curta para reagendar faltas e cancelamentos recentes antes que pacote, validade e receita escapem da agenda."
+                />
+
+                <div className="mt-5 flex flex-col gap-3 rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    Reagendamentos pendentes
+                  </span>
+                  <span className="font-mono text-sm text-[var(--muted)]">
+                    {pendingNoShowCount} abertos / {recoveredNoShowCount} contatos feitos
+                  </span>
+                </div>
+
+                <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                  {noShowRecoveryItems.map((item) => {
+                    const isContacted = contactedNoShowIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-5 transition-colors ${
+                          isContacted
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="text-lg font-semibold tracking-[-0.03em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm text-[var(--muted)]">
+                              {item.missedAt}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${noShowPriorityClassName[item.priority]}`}
+                          >
+                            {item.priority}
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.procedure}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.packageImpact}</p>
+                          <p className="text-[var(--foreground)]">{item.revenueRisk}</p>
+                          <p className="text-[var(--muted)]">{item.suggestedSlot}</p>
+                        </div>
+
+                        <p className="mt-4 rounded-[1.2rem] bg-[var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[var(--foreground)]">
+                          {item.template}
+                        </p>
+
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Reagendar no WhatsApp
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isContacted
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleNoShowContact(item.id)}
+                            type="button"
+                          >
+                            {isContacted ? "Contato feito" : "Marcar contato"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
             </div>
 
             <div className="space-y-6">
@@ -770,6 +1056,107 @@ export default function Home() {
                       </div>
                     </article>
                   ))}
+                </div>
+              </section>
+
+              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface-strong)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Ofertas de renovacao"
+                  description="Propostas prontas para a recepcao apresentar antes da cliente sair, com argumento, valor e mensagem de apoio."
+                />
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Propostas pendentes
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingRenewalOfferCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Receita em aberto
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {renewalPipelineValue.toLocaleString("pt-BR", {
+                        currency: "BRL",
+                        style: "currency",
+                      })}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="mt-5 space-y-4">
+                  {renewalOfferItems.map((item) => {
+                    const isPresented = presentedRenewalIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isPresented
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-white"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm leading-6 text-[var(--muted)]">
+                              {item.procedure} - {item.currentBalance}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${renewalOfferToneClassName[item.tone]}`}
+                          >
+                            {item.tone} prioridade
+                          </span>
+                        </div>
+
+                        <div className="mt-4 rounded-[1.2rem] border border-[var(--line)] bg-[var(--surface)] px-4 py-3">
+                          <p className="text-sm font-medium text-[var(--foreground)]">
+                            {item.suggestedPackage}
+                          </p>
+                          <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                            {item.price}
+                          </strong>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="text-[var(--foreground)]">{item.argument}</p>
+                          <p className="text-[var(--muted)]">{item.nextStep}</p>
+                          <p className="text-[var(--foreground)]">{item.template}</p>
+                        </div>
+
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Enviar proposta
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isPresented
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleRenewalPresented(item.id)}
+                            type="button"
+                          >
+                            {isPresented
+                              ? "Proposta apresentada"
+                              : "Marcar apresentada"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
 
@@ -832,13 +1219,14 @@ export default function Home() {
                             </p>
                           </div>
                           <span
-                            className={`rounded-full px-3 py-1 text-xs font-medium ${followUpPriorityClassName[item.priority]}`}
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${followUpToneClassName[item.tone]}`}
                           >
                             {item.priority}
                           </span>
                         </div>
                         <div className="mt-3 space-y-2 text-sm leading-6">
                           <p className="text-[var(--muted)]">{item.targetDate}</p>
+                          <p className="text-[var(--muted)]">{item.opportunity}</p>
                           <p className="font-medium text-[var(--foreground)]">
                             {item.suggestedSlot}
                           </p>
@@ -1109,46 +1497,96 @@ export default function Home() {
                   description="Carteira curta de clientes paradas ou em risco, com oferta objetiva para recuperar agenda e recorrencia pelo WhatsApp."
                 />
 
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      A acionar
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingCampaignCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Alta prioridade
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {highPriorityPendingCampaignCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Acionadas
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {activatedCampaignCount}
+                    </strong>
+                  </div>
+                </div>
+
                 <div className="mt-6 space-y-4">
-                  {retentionCampaignItems.map((item) => (
-                    <article
-                      key={item.id}
-                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-4"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1">
-                          <h3 className="font-semibold tracking-[-0.02em]">
-                            {item.client}
-                          </h3>
-                          <p className="text-sm text-[var(--muted)]">
-                            {item.segment} - {item.daysWithoutVisit} dias sem visita
-                          </p>
-                        </div>
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${retentionToneClassName[item.tone]}`}
-                        >
-                          {item.tone} prioridade
-                        </span>
-                      </div>
+                  {retentionCampaignItems.map((item) => {
+                    const isActivated = activatedCampaignIds.includes(item.id);
 
-                      <div className="mt-4 space-y-2 text-sm leading-6">
-                        <p className="font-medium text-[var(--foreground)]">
-                          {item.revenueRisk}
-                        </p>
-                        <p className="text-[var(--muted)]">{item.offer}</p>
-                        <p className="text-[var(--foreground)]">{item.template}</p>
-                      </div>
-
-                      <a
-                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
-                        href={item.url}
-                        rel="noreferrer"
-                        target="_blank"
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isActivated
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
+                        }`}
                       >
-                        Reativar pelo WhatsApp
-                      </a>
-                    </article>
-                  ))}
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm text-[var(--muted)]">
+                              {item.segment} - {item.daysWithoutVisit} dias sem visita
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${retentionToneClassName[item.tone]}`}
+                          >
+                            {item.tone} prioridade
+                          </span>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.revenueRisk}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.offer}</p>
+                          <p className="text-[var(--foreground)]">{item.template}</p>
+                        </div>
+
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Reativar pelo WhatsApp
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isActivated
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleRetentionCampaign(item.id)}
+                            type="button"
+                          >
+                            {isActivated
+                              ? "Campanha acionada"
+                              : "Marcar como acionada"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
             </div>

@@ -59,8 +59,10 @@
 - Criar agenda de procedimentos com formularios persistidos.
 - Persistir controle de pacotes, sessoes restantes e fechamento de atendimento.
 - Criar historico de atendimentos.
+- Persistir alertas de anamnese e liberar atendimento com base em respostas atualizadas.
 - Criar migration inicial PostgreSQL a partir do schema Prisma.
 - Conectar os formularios da tela operacional ao Prisma.
+- Persistir ofertas de renovacao, proposta apresentada e aceite/recusa.
 
 ## Arquitetura de dados
 
@@ -94,23 +96,34 @@
 - Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
 - Central de confirmacao por WhatsApp em memoria com prioridade, prazo sugerido, contadores de pendencias e marcacao de contato enviado.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
+- Controle em memoria de campanhas de reativacao acionadas, com contadores de pendencias, alta prioridade e contatos ja feitos.
+- Retornos recomendados com prioridade, oportunidade comercial, mensagem pronta e CTA direto para WhatsApp.
+- Fila de recuperacao de faltas e cancelamentos recentes, com impacto em pacote/receita, sugestao de encaixe, mensagem pronta e controle local de contato feito.
+- Alertas de anamnese pre-atendimento em memoria, com pendencia, restricao, orientacao e CTA de WhatsApp.
 - Fila de risco de falta e reagendamento com motivo, acao sugerida, horarios alternativos e CTA de WhatsApp.
 - Retornos recomendados acionaveis com prioridade, janela sugerida, mensagem pronta, CTA de WhatsApp e marcacao em memoria de retorno agendado.
+- Painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao.
+- Ofertas de renovacao de pacotes em memoria, com valor sugerido, argumento comercial, proximo passo, mensagem de WhatsApp e marcacao de proposta apresentada.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
 
+- Persistir comissoes, produtividade e metas por profissional.
 - Persistir campanhas de reativacao e retornos recomendados.
+- Persistir ofertas de renovacao e resultado da negociacao.
 - Lembrete de confirmacao por WhatsApp.
+- Acompanhamento de status dos retornos recomendados: pendente, enviado, agendado e perdido.
+- Persistir controle de faltas, reagendamento e contato feito.
 - Controle de faltas e reagendamento.
+- Ficha de anamnese por procedimento com bloqueio operacional antes de procedimentos sensiveis.
 - Persistir tentativas de confirmacao, risco de falta e horarios alternativos de reagendamento.
 - Persistir marcacao de retorno agendado, canal de contato e proxima data sugerida.
 - Ficha de anamnese por procedimento.
 - Antes/depois com imagens.
-- Comissoes por profissional.
 - Dashboard de faturamento, agenda e retorno.
 - Campanhas para clientes inativos.
 - Renovacao automatica de pacotes.
+- Persistir status de campanha acionada, resposta recebida e proxima tentativa de reativacao.
 - Persistir status de confirmacao enviada, resposta recebida e falta/reagendamento por agendamento.
 - Permissoes por perfil: dona, gestora, recepcao e profissional.
 
