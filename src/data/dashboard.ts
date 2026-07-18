@@ -39,6 +39,19 @@ export type FollowUpItem = {
   targetDate: string;
 };
 
+export type NoShowRecoveryItem = {
+  id: string;
+  client: string;
+  missedAt: string;
+  procedure: string;
+  packageImpact: string;
+  revenueRisk: string;
+  suggestedSlot: string;
+  template: string;
+  url: string;
+  priority: "Hoje" | "Esta semana";
+};
+
 export type AttendanceClosingItem = {
   id: string;
   client: string;
@@ -256,6 +269,35 @@ export const followUpItems: FollowUpItem[] = [
   },
 ];
 
+export const noShowRecoveryItems: NoShowRecoveryItem[] = [
+  {
+    id: "ns-1",
+    client: "Aline Mota",
+    missedAt: "Faltou ontem as 15:10",
+    procedure: "Drenagem pos-operatoria",
+    packageImpact: "4 sessoes restantes; intervalo ideal ja atrasado.",
+    revenueRisk: "R$ 720 em recorrencia do pacote",
+    suggestedSlot: "Oferecer hoje 12:20 ou amanha 08:40.",
+    template:
+      "Oi, Aline! Vi que nao conseguimos fazer sua drenagem ontem. Tenho hoje 12h20 ou amanha 08h40 para voce nao perder o ritmo do pacote. Qual fica melhor?",
+    url: "https://wa.me/5511933333333",
+    priority: "Hoje",
+  },
+  {
+    id: "ns-2",
+    client: "Renata Nogueira",
+    missedAt: "Cancelou em cima da hora na ultima visita",
+    procedure: "Depilacao a laser perna inteira",
+    packageImpact: "Pacote com validade em 18 dias.",
+    revenueRisk: "Risco de perder renovacao de R$ 1.290",
+    suggestedSlot: "Tentar encaixe no almoco desta semana.",
+    template:
+      "Oi, Renata! Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana. Quer que eu veja duas opcoes?",
+    url: "https://wa.me/5511911111111",
+    priority: "Esta semana",
+  },
+];
+
 export const attendanceClosingItems: AttendanceClosingItem[] = [
   {
     id: "clo-1",
@@ -385,6 +427,16 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
     dueLabel: "Enviar antes das 17:00",
+    priority: "Alta",
+  },
+  {
+    id: "wa-4",
+    client: "Renata Nogueira",
+    reason: "Recuperar cancelamento recente",
+    template:
+      "Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana.",
+    url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar hoje",
     priority: "Alta",
   },
 ];
