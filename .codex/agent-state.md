@@ -27,6 +27,7 @@ Foi aprimorada a area de retornos recomendados com prioridade, oportunidade come
 Foi adicionada uma fila operacional de recuperacao de faltas, ainda mockada, para reagendar faltas/cancelamentos recentes com impacto em pacote, risco de receita, sugestao de encaixe e mensagem de WhatsApp.
 Foi adicionada uma secao operacional de alertas de anamnese pre-atendimento, ainda mockada, para destacar pendencias, restricoes e validacao por WhatsApp antes de procedimentos sensiveis.
 Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do risco, horarios alternativos e mensagem pronta por WhatsApp para proteger a agenda do dia.
+Foi adicionada uma area mockada de ofertas de renovacao de pacotes, com valor sugerido, argumento comercial, mensagem de WhatsApp e marcacao em memoria de proposta apresentada.
 
 Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
@@ -35,6 +36,7 @@ Ainda pendente:
 - Persistir recuperacao de faltas, contato feito e reagendamento.
 - Persistir alertas de anamnese por cliente, procedimento e agendamento.
 - Persistir risco de falta, tentativa de contato e reagendamento sugerido.
+- Persistir ofertas de renovacao, proposta apresentada e aceite/recusa da cliente.
 - Criar migrations quando houver `DATABASE_URL` real configurada.
 - Conectar formularios e cards operacionais ao Prisma.
 - Persistir status de mensagens enviadas, respostas de confirmacao e reagendamentos.
@@ -55,6 +57,7 @@ Implementar o primeiro fluxo operacional editavel:
 - status de acompanhamento para retornos acionados por WhatsApp
 - persistencia dos alertas de anamnese pre-atendimento
 - persistencia de risco de falta e tentativa de reagendamento
+- persistencia de ofertas de renovacao e aceite/recusa
 - regras de baixa de sessoes e agenda de retorno
 - migration inicial PostgreSQL quando o banco de desenvolvimento estiver definido
 

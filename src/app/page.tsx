@@ -17,6 +17,7 @@ import {
   packageHealthItems,
   priorityItems,
   retentionCampaignItems,
+  renewalOfferItems,
   type WhatsAppQueueItem,
   whatsAppQueueItems,
 } from "@/data/dashboard";
@@ -95,6 +96,14 @@ const noShowPriorityClassName: Record<
 const noShowToneClassName: Record<(typeof noShowRiskItems)[number]["tone"], string> = {
   Alto: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Medio: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const renewalOfferToneClassName: Record<
+  (typeof renewalOfferItems)[number]["tone"],
+  string
+> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 type QuickFlowForm = {
@@ -185,6 +194,7 @@ export default function Home() {
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
   const [contactedNoShowIds, setContactedNoShowIds] = useState<string[]>([]);
   const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
+  const [presentedRenewalIds, setPresentedRenewalIds] = useState<string[]>([]);
   const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
@@ -210,6 +220,12 @@ export default function Home() {
   const highPriorityWhatsAppCount = whatsAppQueueList.filter(
     (item) => item.priority === "Alta" && !sentWhatsAppIds.includes(item.id),
   ).length;
+  const pendingRenewalOfferCount =
+    renewalOfferItems.length - presentedRenewalIds.length;
+  const renewalPipelineValue = renewalOfferItems
+    .filter((item) => !presentedRenewalIds.includes(item.id))
+    .map((item) => Number(item.price.replace(/\D/g, "")))
+    .reduce((total, value) => total + value, 0);
   const activatedCampaignCount = activatedCampaignIds.length;
   const pendingCampaignCount =
     retentionCampaignItems.length - activatedCampaignCount;
@@ -315,6 +331,14 @@ export default function Home() {
     setSentWhatsAppIds((current) =>
       current.includes(id)
         ? current.filter((sentId) => sentId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleRenewalPresented(id: string) {
+    setPresentedRenewalIds((current) =>
+      current.includes(id)
+        ? current.filter((presentedId) => presentedId !== id)
         : [...current, id],
     );
   }
@@ -942,6 +966,107 @@ export default function Home() {
                       </div>
                     </article>
                   ))}
+                </div>
+              </section>
+
+              <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface-strong)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Ofertas de renovacao"
+                  description="Propostas prontas para a recepcao apresentar antes da cliente sair, com argumento, valor e mensagem de apoio."
+                />
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Propostas pendentes
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingRenewalOfferCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Receita em aberto
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {renewalPipelineValue.toLocaleString("pt-BR", {
+                        currency: "BRL",
+                        style: "currency",
+                      })}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="mt-5 space-y-4">
+                  {renewalOfferItems.map((item) => {
+                    const isPresented = presentedRenewalIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isPresented
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-white"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm leading-6 text-[var(--muted)]">
+                              {item.procedure} - {item.currentBalance}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${renewalOfferToneClassName[item.tone]}`}
+                          >
+                            {item.tone} prioridade
+                          </span>
+                        </div>
+
+                        <div className="mt-4 rounded-[1.2rem] border border-[var(--line)] bg-[var(--surface)] px-4 py-3">
+                          <p className="text-sm font-medium text-[var(--foreground)]">
+                            {item.suggestedPackage}
+                          </p>
+                          <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                            {item.price}
+                          </strong>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-sm leading-6">
+                          <p className="text-[var(--foreground)]">{item.argument}</p>
+                          <p className="text-[var(--muted)]">{item.nextStep}</p>
+                          <p className="text-[var(--foreground)]">{item.template}</p>
+                        </div>
+
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Enviar proposta
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isPresented
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleRenewalPresented(item.id)}
+                            type="button"
+                          >
+                            {isPresented
+                              ? "Proposta apresentada"
+                              : "Marcar apresentada"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
 
