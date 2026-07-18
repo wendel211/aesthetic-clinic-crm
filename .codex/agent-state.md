@@ -22,6 +22,7 @@ Foi adicionado um bloco de fechamento de sessao para a equipe marcar consumo de 
 Foi adicionada a base inicial de persistencia com Prisma 7 e schema PostgreSQL multiempresa para clientes, profissionais, procedimentos, pacotes, sessoes, agenda, anamnese, atendimentos, pagamentos e comissoes.
 Foi adicionada uma central de confirmacao por WhatsApp em memoria, com prioridade, prazo sugerido, contadores de pendencias e botao para marcar contato enviado.
 Foi adicionada uma central de campanhas de reativacao por WhatsApp, ainda mockada, para priorizar clientes paradas ou em risco com oferta sugerida e link de contato.
+Foi aprimorada a area de retornos recomendados com prioridade, oportunidade comercial, mensagem pronta e CTA de WhatsApp por cliente.
 Foi adicionada uma fila operacional de recuperacao de faltas, ainda mockada, para reagendar faltas/cancelamentos recentes com impacto em pacote, risco de receita, sugestao de encaixe e mensagem de WhatsApp.
 Foi adicionada uma secao operacional de alertas de anamnese pre-atendimento, ainda mockada, para destacar pendencias, restricoes e validacao por WhatsApp antes de procedimentos sensiveis.
 Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do risco, horarios alternativos e mensagem pronta por WhatsApp para proteger a agenda do dia.
@@ -29,6 +30,7 @@ Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do
 Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
 - Persistir retornos recomendados e campanhas de reativacao.
+- Criar status operacional dos retornos recomendados para controlar contato enviado, retorno agendado e oportunidade perdida.
 - Persistir recuperacao de faltas, contato feito e reagendamento.
 - Persistir alertas de anamnese por cliente, procedimento e agendamento.
 - Persistir risco de falta, tentativa de contato e reagendamento sugerido.
@@ -48,6 +50,7 @@ Implementar o primeiro fluxo operacional editavel:
 - persistencia das campanhas de reativacao, retornos recomendados e recuperacao de faltas
 - persistencia da central de confirmacao por WhatsApp
 - persistencia das campanhas de reativacao e retornos recomendados
+- status de acompanhamento para retornos acionados por WhatsApp
 - persistencia dos alertas de anamnese pre-atendimento
 - persistencia de risco de falta e tentativa de reagendamento
 - regras de baixa de sessoes e agenda de retorno

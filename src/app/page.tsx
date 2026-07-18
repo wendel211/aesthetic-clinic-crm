@@ -76,6 +76,14 @@ const retentionToneClassName: Record<
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
+const followUpToneClassName: Record<
+  (typeof followUpItems)[number]["tone"],
+  string
+> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
 const noShowPriorityClassName: Record<
   (typeof noShowRecoveryItems)[number]["priority"],
   string
@@ -935,18 +943,36 @@ export default function Home() {
                   {followUpItems.map((item) => (
                     <article
                       key={item.id}
-                      className="rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.62)] px-4 py-4"
+                      className="rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.62)] p-4"
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <h3 className="font-semibold tracking-[-0.02em]">{item.client}</h3>
-                        <span className="font-mono text-xs text-[var(--muted)]">
-                          Follow-up
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <h3 className="font-semibold tracking-[-0.02em]">
+                            {item.client}
+                          </h3>
+                          <p className="text-sm text-[var(--muted)]">{item.reason}</p>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${followUpToneClassName[item.tone]}`}
+                        >
+                          {item.tone}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-[var(--foreground)]">{item.reason}</p>
-                      <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                        {item.targetDate}
-                      </p>
+                      <div className="mt-4 space-y-2 text-sm leading-6">
+                        <p className="font-medium text-[var(--foreground)]">
+                          {item.targetDate}
+                        </p>
+                        <p className="text-[var(--muted)]">{item.opportunity}</p>
+                        <p className="text-[var(--foreground)]">{item.template}</p>
+                      </div>
+                      <a
+                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                        href={item.url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Chamar para retorno
+                      </a>
                     </article>
                   ))}
                 </div>

@@ -95,6 +95,7 @@
 - Bloco de fechamento de sessao em memoria para controlar baixa de pacote, cobranca e proximo retorno.
 - Central de confirmacao por WhatsApp em memoria com prioridade, prazo sugerido, contadores de pendencias e marcacao de contato enviado.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
+- Retornos recomendados com prioridade, oportunidade comercial, mensagem pronta e CTA direto para WhatsApp.
 - Fila de recuperacao de faltas e cancelamentos recentes, com impacto em pacote/receita, sugestao de encaixe, mensagem pronta e controle local de contato feito.
 - Alertas de anamnese pre-atendimento em memoria, com pendencia, restricao, orientacao e CTA de WhatsApp.
 - Fila de risco de falta e reagendamento com motivo, acao sugerida, horarios alternativos e CTA de WhatsApp.
@@ -104,6 +105,7 @@
 
 - Persistir campanhas de reativacao e retornos recomendados.
 - Lembrete de confirmacao por WhatsApp.
+- Acompanhamento de status dos retornos recomendados: pendente, enviado, agendado e perdido.
 - Persistir controle de faltas, reagendamento e contato feito.
 - Controle de faltas e reagendamento.
 - Ficha de anamnese por procedimento com bloqueio operacional antes de procedimentos sensiveis.
