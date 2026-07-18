@@ -32,14 +32,15 @@ export type PackageHealthItem = {
   status: "Renovar agora" | "Acompanhar" | "Saudavel";
 };
 
-export type PackageRenewalItem = {
+export type RenewalOfferItem = {
   id: string;
   client: string;
-  packageName: string;
-  trigger: string;
-  projectedValue: string;
-  offer: string;
-  nextAction: string;
+  procedure: string;
+  currentBalance: string;
+  suggestedPackage: string;
+  price: string;
+  argument: string;
+  nextStep: string;
   template: string;
   url: string;
   tone: "Alta" | "Media";
@@ -50,6 +51,25 @@ export type FollowUpItem = {
   client: string;
   reason: string;
   targetDate: string;
+  suggestedSlot: string;
+  priority: "Alta" | "Media";
+  opportunity: string;
+  template: string;
+  url: string;
+  tone: "Alta" | "Media";
+};
+
+export type NoShowRecoveryItem = {
+  id: string;
+  client: string;
+  missedAt: string;
+  procedure: string;
+  packageImpact: string;
+  revenueRisk: string;
+  suggestedSlot: string;
+  template: string;
+  url: string;
+  priority: "Hoje" | "Esta semana";
 };
 
 export type AttendanceClosingItem = {
@@ -61,6 +81,18 @@ export type AttendanceClosingItem = {
   paymentStatus: string;
   nextStep: string;
   priority: "Consumir sessao" | "Cobrar hoje" | "Agendar retorno";
+};
+
+export type AnamnesisAlertItem = {
+  id: string;
+  client: string;
+  procedure: string;
+  appointmentTime: string;
+  status: "Pendente" | "Revisar" | "Liberada";
+  restriction: string;
+  pendingQuestion: string;
+  orientation: string;
+  url: string;
 };
 
 export type NoShowRiskItem = {
@@ -98,6 +130,19 @@ export type RetentionCampaignItem = {
   tone: "Alta" | "Media";
 };
 
+export type ProfessionalPerformanceItem = {
+  id: string;
+  professional: string;
+  specialty: string;
+  appointmentsToday: number;
+  projectedRevenue: string;
+  commissionPreview: string;
+  occupancy: string;
+  packagesSold: string;
+  nextAction: string;
+  status: "Acima da meta" | "Acompanhar" | "Precisa acao";
+};
+
 export type PriorityItem = {
   id: string;
   badge: string;
@@ -133,7 +178,7 @@ export const overviewMetrics: OverviewMetric[] = [
   {
     label: "Pacotes em alerta",
     value: "5",
-    detail: "Clientes com saldo curto ou validade proxima.",
+    detail: "Clientes com saldo curto, validade proxima ou renovacao pronta.",
   },
   {
     label: "Retornos em 7 dias",
@@ -236,30 +281,34 @@ export const packageHealthItems: PackageHealthItem[] = [
   },
 ];
 
-export const packageRenewalItems: PackageRenewalItem[] = [
+export const renewalOfferItems: RenewalOfferItem[] = [
   {
     id: "ren-1",
     client: "Bianca Alves",
-    packageName: "Laser para axilas",
-    trigger: "Ultima sessao hoje e historico de renovacao imediata.",
-    projectedValue: "R$ 890",
-    offer: "Renovar pacote de 10 sessoes com manutencao sem reajuste.",
-    nextAction: "Apresentar proposta no checkout antes da cliente sair.",
+    procedure: "Laser para axilas",
+    currentBalance: "Ultima sessao hoje",
+    suggestedPackage: "Renovar 10 sessoes com preco travado",
+    price: "R$ 890",
+    argument:
+      "Cliente ja chega para encerrar o pacote; a proposta evita intervalo longo entre ciclos.",
+    nextStep: "Apresentar oferta no checkout antes de finalizar o atendimento.",
     template:
-      "Oi, Bianca! Como hoje e sua ultima sessao, deixei pronta a renovacao do laser sem reajuste. Quer garantir o proximo pacote?",
+      "Bianca, para voce nao perder o ritmo do laser, consigo deixar seu novo pacote de 10 sessoes com o mesmo valor de hoje. Quer que eu reserve?",
     url: "https://wa.me/5511955555555",
     tone: "Alta",
   },
   {
     id: "ren-2",
     client: "Marina Costa",
-    packageName: "Pacote facial premium",
-    trigger: "Saldo medio, mas validade entra em alerta nos proximos 30 dias.",
-    projectedValue: "R$ 1.140",
-    offer: "Upgrade para 8 sessoes com retorno mensal ja reservado.",
-    nextAction: "Comentar na recepcao e deixar retorno sugerido no WhatsApp.",
+    procedure: "Pacote facial premium",
+    currentBalance: "3 de 6 sessoes restantes",
+    suggestedPackage: "Upgrade para 8 sessoes com manutencao mensal",
+    price: "R$ 1.240",
+    argument:
+      "Ainda ha saldo suficiente para vender upgrade sem parecer urgencia artificial.",
+    nextStep: "Sinalizar para a Dra. Larissa mencionar o plano no fim da sessao.",
     template:
-      "Oi, Marina! Para manter seu resultado em dia, consigo deixar seu retorno mensal reservado e avaliar o upgrade do pacote facial. Te mando as opcoes?",
+      "Marina, a Dra. Larissa comentou que seu resultado esta evoluindo bem. Posso te mostrar a opcao de upgrade para manter a rotina mensal?",
     url: "https://wa.me/5511966666666",
     tone: "Media",
   },
@@ -271,18 +320,68 @@ export const followUpItems: FollowUpItem[] = [
     client: "Juliana Prado",
     reason: "Revisao de microagulhamento",
     targetDate: "Recomendar agenda ate 28/06",
+    suggestedSlot: "Quinta 10:30 ou sexta 15:20",
+    opportunity: "Retorno tecnico para avaliar pele e vender continuidade.",
+    template:
+      "Oi, Juliana! Sua revisao do microagulhamento ja esta na janela ideal. Posso reservar quinta 10h30 ou sexta 15h20 para avaliarmos o resultado?",
+    url: "https://wa.me/5511955555555",
+    priority: "Alta",
+    tone: "Alta",
   },
   {
     id: "fu-2",
     client: "Paula Siqueira",
     reason: "Manutencao de toxina",
     targetDate: "Retomar contato em 3 dias",
+    suggestedSlot: "Avaliacao rapida na terca 11:40",
+    opportunity: "Manutencao recorrente com boa chance de novo pacote.",
+    template:
+      "Oi, Paula! Ja podemos programar sua manutencao de toxina. Tenho uma avaliacao rapida na terca 11h40, quer que eu deixe separado?",
+    url: "https://wa.me/5511922222222",
+    priority: "Alta",
+    tone: "Alta",
   },
   {
     id: "fu-3",
     client: "Fernanda Melo",
     reason: "Fechamento de novo pacote corporal",
     targetDate: "Confirmar interesse apos a sessao de sexta",
+    suggestedSlot: "Conversa de renovacao apos a sessao",
+    opportunity: "Cliente com intencao de compra e timing de renovacao.",
+    template:
+      "Oi, Fernanda! Depois da sua sessao de sexta, posso te mostrar a melhor opcao para manter o pacote corporal sem perder o intervalo.",
+    url: "https://wa.me/5511966666666",
+    priority: "Media",
+    tone: "Media",
+  },
+];
+
+export const noShowRecoveryItems: NoShowRecoveryItem[] = [
+  {
+    id: "ns-1",
+    client: "Aline Mota",
+    missedAt: "Faltou ontem as 15:10",
+    procedure: "Drenagem pos-operatoria",
+    packageImpact: "4 sessoes restantes; intervalo ideal ja atrasado.",
+    revenueRisk: "R$ 720 em recorrencia do pacote",
+    suggestedSlot: "Oferecer hoje 12:20 ou amanha 08:40.",
+    template:
+      "Oi, Aline! Vi que nao conseguimos fazer sua drenagem ontem. Tenho hoje 12h20 ou amanha 08h40 para voce nao perder o ritmo do pacote. Qual fica melhor?",
+    url: "https://wa.me/5511933333333",
+    priority: "Hoje",
+  },
+  {
+    id: "ns-2",
+    client: "Renata Nogueira",
+    missedAt: "Cancelou em cima da hora na ultima visita",
+    procedure: "Depilacao a laser perna inteira",
+    packageImpact: "Pacote com validade em 18 dias.",
+    revenueRisk: "Risco de perder renovacao de R$ 1.290",
+    suggestedSlot: "Tentar encaixe no almoco desta semana.",
+    template:
+      "Oi, Renata! Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana. Quer que eu veja duas opcoes?",
+    url: "https://wa.me/5511911111111",
+    priority: "Esta semana",
   },
 ];
 
@@ -316,6 +415,45 @@ export const attendanceClosingItems: AttendanceClosingItem[] = [
     paymentStatus: "Receber R$ 420 no checkout",
     nextStep: "Criar lembrete de revisao para 21 dias.",
     priority: "Agendar retorno",
+  },
+];
+
+export const anamnesisAlertItems: AnamnesisAlertItem[] = [
+  {
+    id: "ana-1",
+    client: "Juliana Prado",
+    procedure: "Microagulhamento com drug delivery",
+    appointmentTime: "11:00",
+    status: "Pendente",
+    restriction: "Confirmar uso de acido nos ultimos 7 dias.",
+    pendingQuestion: "A cliente suspendeu retinoides antes do procedimento?",
+    orientation:
+      "Enviar pergunta pelo WhatsApp antes de liberar a sala e registrar resposta na ficha.",
+    url: "https://wa.me/5511955555555",
+  },
+  {
+    id: "ana-2",
+    client: "Renata Nogueira",
+    procedure: "Depilacao a laser perna inteira",
+    appointmentTime: "14:20",
+    status: "Revisar",
+    restriction: "Historico de pele sensivel informado na ultima visita.",
+    pendingQuestion: "Houve exposicao solar ou irritacao recente na area?",
+    orientation:
+      "Revisar com a profissional antes do disparo e remarcar se houver irritacao ativa.",
+    url: "https://wa.me/5511911111111",
+  },
+  {
+    id: "ana-3",
+    client: "Marina Costa",
+    procedure: "Limpeza de pele premium",
+    appointmentTime: "08:30",
+    status: "Liberada",
+    restriction: "Ficha atualizada no ultimo atendimento.",
+    pendingQuestion: "Sem pendencias criticas para hoje.",
+    orientation:
+      "Confirmar apenas produtos usados em casa e seguir atendimento conforme protocolo.",
+    url: "https://wa.me/5511966666666",
   },
 ];
 
@@ -378,6 +516,16 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     dueLabel: "Enviar antes das 17:00",
     priority: "Alta",
   },
+  {
+    id: "wa-4",
+    client: "Renata Nogueira",
+    reason: "Recuperar cancelamento recente",
+    template:
+      "Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana.",
+    url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar hoje",
+    priority: "Alta",
+  },
 ];
 
 export const retentionCampaignItems: RetentionCampaignItem[] = [
@@ -419,9 +567,54 @@ export const retentionCampaignItems: RetentionCampaignItem[] = [
   },
 ];
 
+export const professionalPerformanceItems: ProfessionalPerformanceItem[] = [
+  {
+    id: "perf-1",
+    professional: "Dra. Larissa",
+    specialty: "Facial e injetaveis",
+    appointmentsToday: 6,
+    projectedRevenue: "R$ 2.640",
+    commissionPreview: "R$ 528 em comissao prevista",
+    occupancy: "86% da agenda ocupada",
+    packagesSold: "2 oportunidades de pacote facial",
+    nextAction:
+      "Preparar proposta de manutencao para Juliana e renovacao facial para Marina.",
+    status: "Acima da meta",
+  },
+  {
+    id: "perf-2",
+    professional: "Camila Reis",
+    specialty: "Laser e corporal",
+    appointmentsToday: 5,
+    projectedRevenue: "R$ 1.780",
+    commissionPreview: "R$ 356 em comissao prevista",
+    occupancy: "71% da agenda ocupada",
+    packagesSold: "1 renovacao critica no checkout",
+    nextAction:
+      "Garantir confirmacao da Renata e oferta de renovacao para Bianca antes da saida.",
+    status: "Acompanhar",
+  },
+  {
+    id: "perf-3",
+    professional: "Equipe recepcao",
+    specialty: "Confirmacao e retorno",
+    appointmentsToday: 8,
+    projectedRevenue: "R$ 1.120 em agenda protegida",
+    commissionPreview: "Sem comissao direta",
+    occupancy: "3 horarios dependem de contato",
+    packagesSold: "4 contatos com chance de retorno",
+    nextAction:
+      "Resolver fila de WhatsApp de alta prioridade ate o inicio da tarde.",
+    status: "Precisa acao",
+  },
+];
+
 const pendingConfirmations = agendaItems.filter((item) => item.status === "Aguardando");
 const renewalCandidates = packageHealthItems.filter(
   (item) => item.status === "Renovar agora",
+);
+const highPriorityRenewalOffers = renewalOfferItems.filter(
+  (item) => item.tone === "Alta",
 );
 const sameDayRenewal = renewalCandidates.find((item) =>
   agendaItems.some((agendaItem) => agendaItem.client === item.client),
@@ -448,17 +641,17 @@ export const priorityItems: PriorityItem[] = [
   },
   {
     id: "prio-2",
-    badge: `${renewalCandidates.length} pacote em renovacao`,
+    badge: `${highPriorityRenewalOffers.length} oferta pronta`,
     title: "Fechar pacote antes da ultima sessao",
     detail:
       sameDayRenewal && sameDayRenewalAppointment
         ? `${sameDayRenewal.client} chega hoje para ${sameDayRenewalAppointment.procedure.toLowerCase()} com a ultima sessao ativa.`
         : "Existe pacote em fase de renovacao e vale preparar a proposta ainda hoje.",
     recommendation:
-      "Deixe uma oferta pronta na recepcao com opcao de upgrade ou reposicao imediata.",
+      "Use a oferta sugerida para apresentar valor, argumento e proximo passo antes do checkout.",
     impact: "Aumenta recorrencia e reduz perda de receita por espera.",
     href: "#pacotes",
-    hrefLabel: "Ver pacotes em alerta",
+    hrefLabel: "Ver ofertas de renovacao",
     tone: "Alta",
   },
   {
