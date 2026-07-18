@@ -5,6 +5,7 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   agendaItems,
   type AgendaItem,
+  anamnesisAlertItems,
   attendanceClosingItems,
   type ClientFocusItem,
   clientFocusItems,
@@ -50,6 +51,15 @@ const closingPriorityClassName: Record<
   "Agendar retorno": "bg-[var(--accent-soft)] text-[var(--accent)]",
   "Cobrar hoje": "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   "Consumir sessao": "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+};
+
+const anamnesisStatusClassName: Record<
+  (typeof anamnesisAlertItems)[number]["status"],
+  string
+> = {
+  Liberada: "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+  Pendente: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Revisar: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 const whatsAppPriorityClassName: Record<WhatsAppQueueItem["priority"], string> = {
@@ -621,6 +631,60 @@ export default function Home() {
 
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
             <div className="space-y-6">
+              <section className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
+                <SectionHeading
+                  title="Alertas de anamnese"
+                  description="Checagem rapida antes do atendimento para reduzir risco operacional em procedimentos sensiveis."
+                />
+
+                <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                  {anamnesisAlertItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <p className="font-mono text-xs text-[var(--muted)]">
+                            {item.appointmentTime}
+                          </p>
+                          <h3 className="text-lg font-semibold tracking-[-0.03em]">
+                            {item.client}
+                          </h3>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${anamnesisStatusClassName[item.status]}`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.procedure}
+                      </p>
+                      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                        {item.restriction}
+                      </p>
+                      <p className="mt-4 rounded-[1.2rem] bg-[var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[var(--foreground)]">
+                        {item.pendingQuestion}
+                      </p>
+                      <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
+                        {item.orientation}
+                      </p>
+
+                      <a
+                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                        href={item.url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Validar pelo WhatsApp
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
               <section
                 id="agenda"
                 className="animate-rise-delay-2 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
