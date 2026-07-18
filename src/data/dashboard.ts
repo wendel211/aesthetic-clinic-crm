@@ -51,6 +51,23 @@ export type FollowUpItem = {
   client: string;
   reason: string;
   targetDate: string;
+  opportunity: string;
+  template: string;
+  url: string;
+  tone: "Alta" | "Media";
+};
+
+export type NoShowRecoveryItem = {
+  id: string;
+  client: string;
+  missedAt: string;
+  procedure: string;
+  packageImpact: string;
+  revenueRisk: string;
+  suggestedSlot: string;
+  template: string;
+  url: string;
+  priority: "Hoje" | "Esta semana";
 };
 
 export type AttendanceClosingItem = {
@@ -62,6 +79,18 @@ export type AttendanceClosingItem = {
   paymentStatus: string;
   nextStep: string;
   priority: "Consumir sessao" | "Cobrar hoje" | "Agendar retorno";
+};
+
+export type AnamnesisAlertItem = {
+  id: string;
+  client: string;
+  procedure: string;
+  appointmentTime: string;
+  status: "Pendente" | "Revisar" | "Liberada";
+  restriction: string;
+  pendingQuestion: string;
+  orientation: string;
+  url: string;
 };
 
 export type NoShowRiskItem = {
@@ -276,18 +305,62 @@ export const followUpItems: FollowUpItem[] = [
     client: "Juliana Prado",
     reason: "Revisao de microagulhamento",
     targetDate: "Recomendar agenda ate 28/06",
+    opportunity: "Retorno tecnico para avaliar pele e vender continuidade.",
+    template:
+      "Oi, Juliana! Sua revisao do microagulhamento ja esta na janela ideal. Quer que eu reserve um horario esta semana?",
+    url: "https://wa.me/5511955555555",
+    tone: "Alta",
   },
   {
     id: "fu-2",
     client: "Paula Siqueira",
     reason: "Manutencao de toxina",
     targetDate: "Retomar contato em 3 dias",
+    opportunity: "Manutencao recorrente com boa chance de novo pacote.",
+    template:
+      "Oi, Paula! Ja estamos na fase ideal para programar sua manutencao. Posso te passar duas opcoes de horario?",
+    url: "https://wa.me/5511922222222",
+    tone: "Alta",
   },
   {
     id: "fu-3",
     client: "Fernanda Melo",
     reason: "Fechamento de novo pacote corporal",
     targetDate: "Confirmar interesse apos a sessao de sexta",
+    opportunity: "Cliente com intencao de compra e timing de renovacao.",
+    template:
+      "Oi, Fernanda! Separei uma condicao para voce continuar o pacote corporal sem pausa. Quer que eu te envie?",
+    url: "https://wa.me/5511966666666",
+    tone: "Media",
+  },
+];
+
+export const noShowRecoveryItems: NoShowRecoveryItem[] = [
+  {
+    id: "ns-1",
+    client: "Aline Mota",
+    missedAt: "Faltou ontem as 15:10",
+    procedure: "Drenagem pos-operatoria",
+    packageImpact: "4 sessoes restantes; intervalo ideal ja atrasado.",
+    revenueRisk: "R$ 720 em recorrencia do pacote",
+    suggestedSlot: "Oferecer hoje 12:20 ou amanha 08:40.",
+    template:
+      "Oi, Aline! Vi que nao conseguimos fazer sua drenagem ontem. Tenho hoje 12h20 ou amanha 08h40 para voce nao perder o ritmo do pacote. Qual fica melhor?",
+    url: "https://wa.me/5511933333333",
+    priority: "Hoje",
+  },
+  {
+    id: "ns-2",
+    client: "Renata Nogueira",
+    missedAt: "Cancelou em cima da hora na ultima visita",
+    procedure: "Depilacao a laser perna inteira",
+    packageImpact: "Pacote com validade em 18 dias.",
+    revenueRisk: "Risco de perder renovacao de R$ 1.290",
+    suggestedSlot: "Tentar encaixe no almoco desta semana.",
+    template:
+      "Oi, Renata! Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana. Quer que eu veja duas opcoes?",
+    url: "https://wa.me/5511911111111",
+    priority: "Esta semana",
   },
 ];
 
@@ -321,6 +394,45 @@ export const attendanceClosingItems: AttendanceClosingItem[] = [
     paymentStatus: "Receber R$ 420 no checkout",
     nextStep: "Criar lembrete de revisao para 21 dias.",
     priority: "Agendar retorno",
+  },
+];
+
+export const anamnesisAlertItems: AnamnesisAlertItem[] = [
+  {
+    id: "ana-1",
+    client: "Juliana Prado",
+    procedure: "Microagulhamento com drug delivery",
+    appointmentTime: "11:00",
+    status: "Pendente",
+    restriction: "Confirmar uso de acido nos ultimos 7 dias.",
+    pendingQuestion: "A cliente suspendeu retinoides antes do procedimento?",
+    orientation:
+      "Enviar pergunta pelo WhatsApp antes de liberar a sala e registrar resposta na ficha.",
+    url: "https://wa.me/5511955555555",
+  },
+  {
+    id: "ana-2",
+    client: "Renata Nogueira",
+    procedure: "Depilacao a laser perna inteira",
+    appointmentTime: "14:20",
+    status: "Revisar",
+    restriction: "Historico de pele sensivel informado na ultima visita.",
+    pendingQuestion: "Houve exposicao solar ou irritacao recente na area?",
+    orientation:
+      "Revisar com a profissional antes do disparo e remarcar se houver irritacao ativa.",
+    url: "https://wa.me/5511911111111",
+  },
+  {
+    id: "ana-3",
+    client: "Marina Costa",
+    procedure: "Limpeza de pele premium",
+    appointmentTime: "08:30",
+    status: "Liberada",
+    restriction: "Ficha atualizada no ultimo atendimento.",
+    pendingQuestion: "Sem pendencias criticas para hoje.",
+    orientation:
+      "Confirmar apenas produtos usados em casa e seguir atendimento conforme protocolo.",
+    url: "https://wa.me/5511966666666",
   },
 ];
 
@@ -381,6 +493,16 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
     dueLabel: "Enviar antes das 17:00",
+    priority: "Alta",
+  },
+  {
+    id: "wa-4",
+    client: "Renata Nogueira",
+    reason: "Recuperar cancelamento recente",
+    template:
+      "Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana.",
+    url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar hoje",
     priority: "Alta",
   },
 ];
