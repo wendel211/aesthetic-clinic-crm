@@ -24,6 +24,131 @@
 - Persistir comissoes, produtividade e metas por profissional quando houver `DATABASE_URL` de desenvolvimento.
 - Conectar dashboard operacional a dados reais do Prisma, priorizando cadastro rapido, fechamento de sessao e status de WhatsApp.
 
+## 2026-07-11
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, repositorio GitHub e memoria da automacao.
+- Escolhida melhoria incremental para aumentar renovacao de pacotes sem depender de banco real.
+- Adicionados dados tipados para ofertas de renovacao com saldo atual, pacote sugerido, valor, argumento comercial, proximo passo e mensagem de WhatsApp.
+- Criada a secao "Ofertas de renovacao" dentro da area de pacotes, com contadores de propostas pendentes, receita em aberto e marcacao em memoria de proposta apresentada.
+- Atualizados backlog e estado do agente para refletir a nova superficie operacional e a futura persistencia de aceite/recusa.
+
+### Validacao
+
+- `npm ci` instalou dependencias e reportou 5 vulnerabilidades moderadas.
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Ofertas de renovacao".
+
+### Proximo ciclo
+
+- Persistir ofertas de renovacao, status de proposta apresentada e resultado da negociacao quando houver `DATABASE_URL` de desenvolvimento.
+- Conectar ofertas de renovacao ao fechamento de sessao e ao controle real de pacotes.
+
+## 2026-07-09
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, memoria da automacao e PRs abertas no GitHub.
+- Escolhida melhoria incremental para organizar campanhas de reativacao sem depender de banco real.
+- Adicionados contadores de campanhas a acionar, alta prioridade pendente e campanhas acionadas.
+- Implementado estado em memoria para marcar campanha de reativacao como acionada e refletir conclusao visualmente.
+- Mantido escopo pequeno para preparar persistencia futura de tentativas de contato, resposta e nova tentativa.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Campanhas de reativacao" e do contador "A acionar".
+- Verificacao no navegador interno em `http://localhost:3000`: ao clicar em "Marcar como acionada", o card muda para "Campanha acionada" e os contadores atualizam de 3/0 para 2/1.
+- Observacao: `npm ci` reportou 5 vulnerabilidades moderadas; nao foi usado `npm audit fix --force`.
+
+### Proximo ciclo
+
+- Persistir status de campanha acionada, resposta recebida e proxima tentativa de reativacao.
+- Modelar tentativas de contato no Prisma para WhatsApp, retornos, faltas e campanhas.
+
+## 2026-07-08
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental de relacionamento e recorrencia, sem dependencia externa e sem bloquear em banco.
+- Aprimorada a secao "Retornos recomendados" com prioridade por cliente, oportunidade comercial, mensagem pronta e CTA direto para WhatsApp.
+- Mantida a entrega em escopo reduzido para preparar persistencia futura de status dos retornos.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca de "Chamar para retorno" e da mensagem de revisao da Juliana.
+
+### Observacoes
+
+- `npm ci` reportou 5 vulnerabilidades moderadas via `npm audit`; nao foi aplicado `npm audit fix --force` para evitar alteracao agressiva de dependencias.
+
+### Proximo ciclo
+
+- Persistir retornos recomendados e campanhas de reativacao.
+- Adicionar status operacional para retorno: pendente, enviado, agendado e perdido.
+
+## 2026-07-01
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, decisoes e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental de recuperacao de faltas e cancelamentos recentes, sem depender de banco real.
+- Adicionados dados tipados para faltas recentes com impacto em pacote, risco de receita, sugestao de encaixe e mensagem de WhatsApp.
+- Criada a secao "Recuperacao de faltas" na tela operacional, com contador de contatos pendentes e botao para marcar contato feito em memoria.
+- Incluido cancelamento recente na fila geral de WhatsApp para manter a rotina da recepcao em um so painel.
+
+### Validacao
+
+- `npm install` para restaurar dependencias ausentes no worktree.
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Recuperacao de faltas".
+- Tentativa de verificacao visual com navegador automatizado falhou por timeout de 300s ao navegar para `http://127.0.0.1:3000`.
+
+### Proximo ciclo
+
+- Persistir recuperacao de faltas, contato feito e reagendamento quando houver `DATABASE_URL` de desenvolvimento.
+- Conectar faltas reais da agenda ao fluxo de WhatsApp e aos indicadores de receita/pacote.
+
+## 2026-06-30
+
+### Feito
+
+- Avaliado o estado atual do projeto, memoria da automacao, backlog e arquivos operacionais em `.codex/`.
+- Escolhida melhoria incremental de seguranca operacional antes do atendimento, sem dependencia de banco ou servico externo.
+- Adicionados dados tipados para alertas de anamnese com status, restricao, pergunta pendente, orientacao e link de WhatsApp.
+- Criada a secao "Alertas de anamnese" na tela operacional, antes da agenda do dia, para a recepcao validar pendencias antes de procedimentos sensiveis.
+- Atualizados `.codex/backlog.md` e `.codex/agent-state.md` para refletir o novo bloco e a proxima persistencia.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Alertas de anamnese".
+
+### Observacoes
+
+- `npm ci` reportou 5 vulnerabilidades moderadas herdadas nas dependencias; nao foram corrigidas automaticamente para evitar alteracao ampla ou breaking change neste ciclo.
+
+### Proximo ciclo
+
+- Persistir alertas de anamnese por cliente, procedimento e agendamento.
+- Criar fluxo para marcar anamnese como revisada/liberada quando houver persistencia.
+
 ## 2026-06-21
 
 ### Feito
