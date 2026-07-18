@@ -101,6 +101,7 @@
 - Fila de recuperacao de faltas e cancelamentos recentes, com impacto em pacote/receita, sugestao de encaixe, mensagem pronta e controle local de contato feito.
 - Alertas de anamnese pre-atendimento em memoria, com pendencia, restricao, orientacao e CTA de WhatsApp.
 - Fila de risco de falta e reagendamento com motivo, acao sugerida, horarios alternativos e CTA de WhatsApp.
+- Retornos recomendados acionaveis com prioridade, janela sugerida, mensagem pronta, CTA de WhatsApp e marcacao em memoria de retorno agendado.
 - Painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao.
 - Ofertas de renovacao de pacotes em memoria, com valor sugerido, argumento comercial, proximo passo, mensagem de WhatsApp e marcacao de proposta apresentada.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
@@ -116,6 +117,7 @@
 - Controle de faltas e reagendamento.
 - Ficha de anamnese por procedimento com bloqueio operacional antes de procedimentos sensiveis.
 - Persistir tentativas de confirmacao, risco de falta e horarios alternativos de reagendamento.
+- Persistir marcacao de retorno agendado, canal de contato e proxima data sugerida.
 - Ficha de anamnese por procedimento.
 - Antes/depois com imagens.
 - Dashboard de faturamento, agenda e retorno.

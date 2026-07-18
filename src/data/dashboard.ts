@@ -51,6 +51,8 @@ export type FollowUpItem = {
   client: string;
   reason: string;
   targetDate: string;
+  suggestedSlot: string;
+  priority: "Alta" | "Media";
   opportunity: string;
   template: string;
   url: string;
@@ -318,10 +320,12 @@ export const followUpItems: FollowUpItem[] = [
     client: "Juliana Prado",
     reason: "Revisao de microagulhamento",
     targetDate: "Recomendar agenda ate 28/06",
+    suggestedSlot: "Quinta 10:30 ou sexta 15:20",
     opportunity: "Retorno tecnico para avaliar pele e vender continuidade.",
     template:
-      "Oi, Juliana! Sua revisao do microagulhamento ja esta na janela ideal. Quer que eu reserve um horario esta semana?",
+      "Oi, Juliana! Sua revisao do microagulhamento ja esta na janela ideal. Posso reservar quinta 10h30 ou sexta 15h20 para avaliarmos o resultado?",
     url: "https://wa.me/5511955555555",
+    priority: "Alta",
     tone: "Alta",
   },
   {
@@ -329,10 +333,12 @@ export const followUpItems: FollowUpItem[] = [
     client: "Paula Siqueira",
     reason: "Manutencao de toxina",
     targetDate: "Retomar contato em 3 dias",
+    suggestedSlot: "Avaliacao rapida na terca 11:40",
     opportunity: "Manutencao recorrente com boa chance de novo pacote.",
     template:
-      "Oi, Paula! Ja estamos na fase ideal para programar sua manutencao. Posso te passar duas opcoes de horario?",
+      "Oi, Paula! Ja podemos programar sua manutencao de toxina. Tenho uma avaliacao rapida na terca 11h40, quer que eu deixe separado?",
     url: "https://wa.me/5511922222222",
+    priority: "Alta",
     tone: "Alta",
   },
   {
@@ -340,10 +346,12 @@ export const followUpItems: FollowUpItem[] = [
     client: "Fernanda Melo",
     reason: "Fechamento de novo pacote corporal",
     targetDate: "Confirmar interesse apos a sessao de sexta",
+    suggestedSlot: "Conversa de renovacao apos a sessao",
     opportunity: "Cliente com intencao de compra e timing de renovacao.",
     template:
-      "Oi, Fernanda! Separei uma condicao para voce continuar o pacote corporal sem pausa. Quer que eu te envie?",
+      "Oi, Fernanda! Depois da sua sessao de sexta, posso te mostrar a melhor opcao para manter o pacote corporal sem perder o intervalo.",
     url: "https://wa.me/5511966666666",
+    priority: "Media",
     tone: "Media",
   },
 ];

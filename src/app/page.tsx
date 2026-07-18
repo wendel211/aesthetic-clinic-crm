@@ -204,6 +204,7 @@ export default function Home() {
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
   const [contactedNoShowIds, setContactedNoShowIds] = useState<string[]>([]);
   const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
+  const [scheduledFollowUpIds, setScheduledFollowUpIds] = useState<string[]>([]);
   const [presentedRenewalIds, setPresentedRenewalIds] = useState<string[]>([]);
   const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
   const agendaList = useMemo(
@@ -221,6 +222,12 @@ export default function Home() {
   const completedClosingCount = completedClosingIds.length;
   const pendingClosingCount =
     attendanceClosingItems.length - completedClosingCount;
+  const scheduledFollowUpCount = scheduledFollowUpIds.length;
+  const pendingFollowUpCount = followUpItems.length - scheduledFollowUpCount;
+  const highPriorityFollowUpCount = followUpItems.filter(
+    (item) =>
+      item.priority === "Alta" && !scheduledFollowUpIds.includes(item.id),
+  ).length;
   const recoveredNoShowCount = contactedNoShowIds.length;
   const pendingNoShowCount =
     noShowRecoveryItems.length - recoveredNoShowCount;
@@ -341,6 +348,14 @@ export default function Home() {
     setSentWhatsAppIds((current) =>
       current.includes(id)
         ? current.filter((sentId) => sentId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleFollowUpScheduled(id: string) {
+    setScheduledFollowUpIds((current) =>
+      current.includes(id)
+        ? current.filter((scheduledId) => scheduledId !== id)
         : [...current, id],
     );
   }
@@ -1154,42 +1169,93 @@ export default function Home() {
                   description="Atendimento bem encerrado gera a proxima agenda. Aqui entram os retornos que merecem acao antes de esfriar."
                 />
 
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Pendentes
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingFollowUpCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Alta prioridade
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {highPriorityFollowUpCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Agendados
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {scheduledFollowUpCount}
+                    </strong>
+                  </div>
+                </div>
+
                 <div className="mt-6 space-y-3">
-                  {followUpItems.map((item) => (
-                    <article
-                      key={item.id}
-                      className="rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.62)] p-4"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1">
-                          <h3 className="font-semibold tracking-[-0.02em]">
-                            {item.client}
-                          </h3>
-                          <p className="text-sm text-[var(--muted)]">{item.reason}</p>
-                        </div>
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${followUpToneClassName[item.tone]}`}
-                        >
-                          {item.tone}
-                        </span>
-                      </div>
-                      <div className="mt-4 space-y-2 text-sm leading-6">
-                        <p className="font-medium text-[var(--foreground)]">
-                          {item.targetDate}
-                        </p>
-                        <p className="text-[var(--muted)]">{item.opportunity}</p>
-                        <p className="text-[var(--foreground)]">{item.template}</p>
-                      </div>
-                      <a
-                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
-                        href={item.url}
-                        rel="noreferrer"
-                        target="_blank"
+                  {followUpItems.map((item) => {
+                    const isScheduled = scheduledFollowUpIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.4rem] border px-4 py-4 transition-colors ${
+                          isScheduled
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-[rgba(255,255,255,0.62)]"
+                        }`}
                       >
-                        Chamar para retorno
-                      </a>
-                    </article>
-                  ))}
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1">
+                            <h3 className="font-semibold tracking-[-0.02em]">
+                              {item.client}
+                            </h3>
+                            <p className="text-sm text-[var(--foreground)]">
+                              {item.reason}
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-medium ${followUpToneClassName[item.tone]}`}
+                          >
+                            {item.priority}
+                          </span>
+                        </div>
+                        <div className="mt-3 space-y-2 text-sm leading-6">
+                          <p className="text-[var(--muted)]">{item.targetDate}</p>
+                          <p className="text-[var(--muted)]">{item.opportunity}</p>
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.suggestedSlot}
+                          </p>
+                          <p className="text-[var(--foreground)]">{item.template}</p>
+                        </div>
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <a
+                            className="inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                            href={item.url}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Chamar no WhatsApp
+                          </a>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isScheduled
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleFollowUpScheduled(item.id)}
+                            type="button"
+                          >
+                            {isScheduled ? "Retorno agendado" : "Marcar retorno"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
 
