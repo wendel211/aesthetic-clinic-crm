@@ -1,5 +1,30 @@
 # Relatorio Diario
 
+## 2026-07-09
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, memoria da automacao e PRs abertas no GitHub.
+- Escolhida melhoria incremental para organizar campanhas de reativacao sem depender de banco real.
+- Adicionados contadores de campanhas a acionar, alta prioridade pendente e campanhas acionadas.
+- Implementado estado em memoria para marcar campanha de reativacao como acionada e refletir conclusao visualmente.
+- Mantido escopo pequeno para preparar persistencia futura de tentativas de contato, resposta e nova tentativa.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Campanhas de reativacao" e do contador "A acionar".
+- Verificacao no navegador interno em `http://localhost:3000`: ao clicar em "Marcar como acionada", o card muda para "Campanha acionada" e os contadores atualizam de 3/0 para 2/1.
+- Observacao: `npm ci` reportou 5 vulnerabilidades moderadas; nao foi usado `npm audit fix --force`.
+
+### Proximo ciclo
+
+- Persistir status de campanha acionada, resposta recebida e proxima tentativa de reativacao.
+- Modelar tentativas de contato no Prisma para WhatsApp, retornos, faltas e campanhas.
+
 ## 2026-07-08
 
 ### Feito
@@ -76,6 +101,7 @@
 
 - Persistir alertas de anamnese por cliente, procedimento e agendamento.
 - Criar fluxo para marcar anamnese como revisada/liberada quando houver persistencia.
+
 ## 2026-06-21
 
 ### Feito
