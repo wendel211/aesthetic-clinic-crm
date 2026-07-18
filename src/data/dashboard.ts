@@ -63,12 +63,39 @@ export type AttendanceClosingItem = {
   priority: "Consumir sessao" | "Cobrar hoje" | "Agendar retorno";
 };
 
+export type AnamnesisAlertItem = {
+  id: string;
+  client: string;
+  procedure: string;
+  appointmentTime: string;
+  status: "Pendente" | "Revisar" | "Liberada";
+  restriction: string;
+  pendingQuestion: string;
+  orientation: string;
+  url: string;
+};
+
+export type NoShowRiskItem = {
+  id: string;
+  client: string;
+  appointmentTime: string;
+  procedure: string;
+  reason: string;
+  suggestedAction: string;
+  fallbackSlots: string[];
+  template: string;
+  url: string;
+  tone: "Alto" | "Medio";
+};
+
 export type WhatsAppQueueItem = {
   id: string;
   client: string;
   reason: string;
   template: string;
   url: string;
+  dueLabel: string;
+  priority: "Alta" | "Media";
 };
 
 export type RetentionCampaignItem = {
@@ -304,6 +331,76 @@ export const attendanceClosingItems: AttendanceClosingItem[] = [
   },
 ];
 
+export const anamnesisAlertItems: AnamnesisAlertItem[] = [
+  {
+    id: "ana-1",
+    client: "Juliana Prado",
+    procedure: "Microagulhamento com drug delivery",
+    appointmentTime: "11:00",
+    status: "Pendente",
+    restriction: "Confirmar uso de acido nos ultimos 7 dias.",
+    pendingQuestion: "A cliente suspendeu retinoides antes do procedimento?",
+    orientation:
+      "Enviar pergunta pelo WhatsApp antes de liberar a sala e registrar resposta na ficha.",
+    url: "https://wa.me/5511955555555",
+  },
+  {
+    id: "ana-2",
+    client: "Renata Nogueira",
+    procedure: "Depilacao a laser perna inteira",
+    appointmentTime: "14:20",
+    status: "Revisar",
+    restriction: "Historico de pele sensivel informado na ultima visita.",
+    pendingQuestion: "Houve exposicao solar ou irritacao recente na area?",
+    orientation:
+      "Revisar com a profissional antes do disparo e remarcar se houver irritacao ativa.",
+    url: "https://wa.me/5511911111111",
+  },
+  {
+    id: "ana-3",
+    client: "Marina Costa",
+    procedure: "Limpeza de pele premium",
+    appointmentTime: "08:30",
+    status: "Liberada",
+    restriction: "Ficha atualizada no ultimo atendimento.",
+    pendingQuestion: "Sem pendencias criticas para hoje.",
+    orientation:
+      "Confirmar apenas produtos usados em casa e seguir atendimento conforme protocolo.",
+    url: "https://wa.me/5511966666666",
+  },
+];
+
+export const noShowRiskItems: NoShowRiskItem[] = [
+  {
+    id: "ns-1",
+    client: "Renata Nogueira",
+    appointmentTime: "14:20",
+    procedure: "Depilacao a laser perna inteira",
+    reason: "Confirmacao pendente e historico de resposta lenta no mesmo dia.",
+    suggestedAction:
+      "Enviar confirmacao curta agora e oferecer troca para 16:30 se nao puder vir.",
+    fallbackSlots: ["16:30", "18:10"],
+    template:
+      "Oi, Renata! Seu horario das 14h20 segue reservado. Consegue confirmar? Se apertar para hoje, tenho 16h30 como alternativa.",
+    url: "https://wa.me/5511911111111",
+    tone: "Alto",
+  },
+  {
+    id: "ns-2",
+    client: "Aline Mota",
+    appointmentTime: "Sem horario ativo",
+    procedure: "Drenagem pos-operatoria",
+    reason: "Faltou na ultima sessao e ainda tem saldo de pacote parado.",
+    suggestedAction:
+      "Oferecer dois horarios de almoco e reforcar que o pacote continua reservado.",
+    fallbackSlots: ["12:10", "12:50"],
+    template:
+      "Oi, Aline! Para nao esfriar seu resultado, separei 12h10 ou 12h50 para retomar sua drenagem. Qual fica melhor?",
+    url: "https://wa.me/5511933333333",
+    tone: "Medio",
+  },
+];
+
 export const whatsAppQueueItems: WhatsAppQueueItem[] = [
   {
     id: "wa-1",
@@ -311,6 +408,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Confirmacao pendente de hoje",
     template: "Oi, Renata! Passando para confirmar seu horario das 14h20.",
     url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar ate 13:20",
+    priority: "Alta",
   },
   {
     id: "wa-2",
@@ -318,6 +417,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Retorno de manutencao",
     template: "Oi, Paula! Ja podemos programar sua proxima manutencao.",
     url: "https://wa.me/5511922222222",
+    dueLabel: "Enviar hoje",
+    priority: "Media",
   },
   {
     id: "wa-3",
@@ -325,6 +426,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Reagendamento apos falta",
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
+    dueLabel: "Enviar antes das 17:00",
+    priority: "Alta",
   },
   {
     id: "wa-4",
@@ -333,6 +436,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     template:
       "Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana.",
     url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar hoje",
+    priority: "Alta",
   },
 ];
 

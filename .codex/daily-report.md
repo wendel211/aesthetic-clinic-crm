@@ -24,6 +24,80 @@
 - Persistir recuperacao de faltas, contato feito e reagendamento quando houver `DATABASE_URL` de desenvolvimento.
 - Conectar faltas reais da agenda ao fluxo de WhatsApp e aos indicadores de receita/pacote.
 
+## 2026-06-30
+
+### Feito
+
+- Avaliado o estado atual do projeto, memoria da automacao, backlog e arquivos operacionais em `.codex/`.
+- Escolhida melhoria incremental de seguranca operacional antes do atendimento, sem dependencia de banco ou servico externo.
+- Adicionados dados tipados para alertas de anamnese com status, restricao, pergunta pendente, orientacao e link de WhatsApp.
+- Criada a secao "Alertas de anamnese" na tela operacional, antes da agenda do dia, para a recepcao validar pendencias antes de procedimentos sensiveis.
+- Atualizados `.codex/backlog.md` e `.codex/agent-state.md` para refletir o novo bloco e a proxima persistencia.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Alertas de anamnese".
+
+### Observacoes
+
+- `npm ci` reportou 5 vulnerabilidades moderadas herdadas nas dependencias; nao foram corrigidas automaticamente para evitar alteracao ampla ou breaking change neste ciclo.
+
+### Proximo ciclo
+
+- Persistir alertas de anamnese por cliente, procedimento e agendamento.
+- Criar fluxo para marcar anamnese como revisada/liberada quando houver persistencia.
+## 2026-06-21
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, repositorio GitHub e memoria da automacao.
+- Escolhida melhoria incremental para reduzir faltas e proteger agenda, sem depender de banco real.
+- Adicionado tipo e dados mockados para risco de falta e reagendamento, com motivo, horarios alternativos, mensagem sugerida e link de WhatsApp.
+- Criada a secao "Risco de falta e reagendamento" na tela operacional.
+- Atualizados backlog e estado do agente para refletir a nova superficie operacional e a proxima etapa de persistencia.
+
+### Validacao
+
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Risco de falta e reagendamento".
+
+### Proximo ciclo
+
+- Persistir cadastro rapido, fechamento de sessao, risco de falta e campanhas de reativacao quando houver `DATABASE_URL` de desenvolvimento.
+- Modelar tentativas de contato e eventos de reagendamento no Prisma antes de integrar WhatsApp real.
+
+## 2026-06-20
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura e memoria operacional em `.codex/`.
+- Escolhida melhoria incremental para reduzir faltas e organizar a rotina da recepcao sem depender de banco.
+- Adicionada central de confirmacao na fila de WhatsApp com contadores de pendencias e contatos de alta prioridade.
+- Incluidos prazo sugerido e prioridade nos itens mockados da fila de WhatsApp.
+- Implementado estado em memoria para marcar contato como enviado e refletir a conclusao visualmente.
+- Criada branch `feat/confirmacao-whatsapp` para publicar a entrega.
+- PR aberto: https://github.com/wendel211/aesthetic-clinic-crm/pull/6
+
+### Validacao
+
+- `npm ci` instalou dependencias, mas o comando excedeu o timeout depois de concluir a instalacao; o npm reportou 5 vulnerabilidades moderadas.
+- `npm run lint`
+- `npm run build`
+- `npm run prisma:validate`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200.
+- Tentativa de verificacao visual com Playwright falhou por timeout do tool.
+
+### Proximo ciclo
+
+- Persistir confirmacao enviada, resposta da cliente e reagendamento/falta por agendamento.
+- Conectar o fluxo rapido e a central de WhatsApp ao Prisma quando houver `DATABASE_URL` de desenvolvimento.
+
 ## 2026-06-19
 
 ### Feito
