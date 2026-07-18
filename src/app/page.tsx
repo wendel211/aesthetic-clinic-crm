@@ -15,6 +15,7 @@ import {
   noShowRiskItems,
   overviewMetrics,
   packageHealthItems,
+  professionalPerformanceItems,
   priorityItems,
   retentionCampaignItems,
   renewalOfferItems,
@@ -96,6 +97,15 @@ const noShowPriorityClassName: Record<
 const noShowToneClassName: Record<(typeof noShowRiskItems)[number]["tone"], string> = {
   Alto: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Medio: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const professionalStatusClassName: Record<
+  (typeof professionalPerformanceItems)[number]["status"],
+  string
+> = {
+  "Acima da meta": "bg-[rgba(31,138,112,0.14)] text-[var(--success)]",
+  Acompanhar: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+  "Precisa acao": "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
 };
 
 const renewalOfferToneClassName: Record<
@@ -832,6 +842,71 @@ export default function Home() {
                         {item.summary}
                       </p>
                       <p className="mt-4 border-t border-[var(--line)] pt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.nextAction}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section
+                id="produtividade"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
+                <SectionHeading
+                  title="Comissoes e produtividade"
+                  description="Leitura rapida para a dona acompanhar producao do dia, repasse previsto e onde a equipe precisa agir antes do fechamento."
+                />
+
+                <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                  {professionalPerformanceItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-5"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <h3 className="text-lg font-semibold tracking-[-0.03em]">
+                            {item.professional}
+                          </h3>
+                          <p className="text-sm text-[var(--muted)]">
+                            {item.specialty}
+                          </p>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${professionalStatusClassName[item.status]}`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+
+                      <div className="mt-5 grid gap-3 text-sm">
+                        <div className="rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3">
+                          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">
+                            Producao
+                          </p>
+                          <strong className="mt-2 block text-xl font-semibold tracking-[-0.04em]">
+                            {item.projectedRevenue}
+                          </strong>
+                          <p className="mt-1 text-[var(--muted)]">
+                            {item.appointmentsToday} atendimentos hoje
+                          </p>
+                        </div>
+                        <div className="rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3">
+                          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">
+                            Repasse
+                          </p>
+                          <p className="mt-2 font-medium text-[var(--foreground)]">
+                            {item.commissionPreview}
+                          </p>
+                          <p className="mt-1 text-[var(--muted)]">{item.occupancy}</p>
+                        </div>
+                      </div>
+
+                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.packagesSold}
+                      </p>
+                      <p className="mt-3 border-t border-[var(--line)] pt-4 text-sm leading-6 text-[var(--muted)]">
                         {item.nextAction}
                       </p>
                     </article>

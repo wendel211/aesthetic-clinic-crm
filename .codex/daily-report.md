@@ -1,5 +1,29 @@
 # Relatorio Diario
 
+## 2026-07-13
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, memoria da automacao e repositorio GitHub.
+- Escolhida melhoria incremental para gestao comercial sem depender de banco real.
+- Adicionados dados tipados para comissoes e produtividade por profissional.
+- Criada a secao "Comissoes e produtividade" na tela operacional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao.
+- Criada branch `feat/comissoes-produtividade` para publicar a entrega.
+- Atualizados backlog e estado do agente para refletir a nova superficie operacional e a proxima etapa de persistencia.
+
+### Validacao
+
+- `npm ci --ignore-scripts --prefer-offline --no-audit --no-fund`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou a presenca da secao "Comissoes e produtividade".
+
+### Proximo ciclo
+
+- Persistir comissoes, produtividade e metas por profissional quando houver `DATABASE_URL` de desenvolvimento.
+- Conectar dashboard operacional a dados reais do Prisma, priorizando cadastro rapido, fechamento de sessao e status de WhatsApp.
+
 ## 2026-07-11
 
 ### Feito

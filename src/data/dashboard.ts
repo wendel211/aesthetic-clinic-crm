@@ -128,6 +128,19 @@ export type RetentionCampaignItem = {
   tone: "Alta" | "Media";
 };
 
+export type ProfessionalPerformanceItem = {
+  id: string;
+  professional: string;
+  specialty: string;
+  appointmentsToday: number;
+  projectedRevenue: string;
+  commissionPreview: string;
+  occupancy: string;
+  packagesSold: string;
+  nextAction: string;
+  status: "Acima da meta" | "Acompanhar" | "Precisa acao";
+};
+
 export type PriorityItem = {
   id: string;
   badge: string;
@@ -543,6 +556,48 @@ export const retentionCampaignItems: RetentionCampaignItem[] = [
       "Oi, Tatiane! Passando para manter seu intervalo certinho. Quer deixar sua proxima sessao reservada?",
     url: "https://wa.me/5511944444444",
     tone: "Media",
+  },
+];
+
+export const professionalPerformanceItems: ProfessionalPerformanceItem[] = [
+  {
+    id: "perf-1",
+    professional: "Dra. Larissa",
+    specialty: "Facial e injetaveis",
+    appointmentsToday: 6,
+    projectedRevenue: "R$ 2.640",
+    commissionPreview: "R$ 528 em comissao prevista",
+    occupancy: "86% da agenda ocupada",
+    packagesSold: "2 oportunidades de pacote facial",
+    nextAction:
+      "Preparar proposta de manutencao para Juliana e renovacao facial para Marina.",
+    status: "Acima da meta",
+  },
+  {
+    id: "perf-2",
+    professional: "Camila Reis",
+    specialty: "Laser e corporal",
+    appointmentsToday: 5,
+    projectedRevenue: "R$ 1.780",
+    commissionPreview: "R$ 356 em comissao prevista",
+    occupancy: "71% da agenda ocupada",
+    packagesSold: "1 renovacao critica no checkout",
+    nextAction:
+      "Garantir confirmacao da Renata e oferta de renovacao para Bianca antes da saida.",
+    status: "Acompanhar",
+  },
+  {
+    id: "perf-3",
+    professional: "Equipe recepcao",
+    specialty: "Confirmacao e retorno",
+    appointmentsToday: 8,
+    projectedRevenue: "R$ 1.120 em agenda protegida",
+    commissionPreview: "Sem comissao direta",
+    occupancy: "3 horarios dependem de contato",
+    packagesSold: "4 contatos com chance de retorno",
+    nextAction:
+      "Resolver fila de WhatsApp de alta prioridade ate o inicio da tarde.",
+    status: "Precisa acao",
   },
 ];
 

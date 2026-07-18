@@ -27,10 +27,12 @@ Foi aprimorada a area de retornos recomendados com prioridade, oportunidade come
 Foi adicionada uma fila operacional de recuperacao de faltas, ainda mockada, para reagendar faltas/cancelamentos recentes com impacto em pacote, risco de receita, sugestao de encaixe e mensagem de WhatsApp.
 Foi adicionada uma secao operacional de alertas de anamnese pre-atendimento, ainda mockada, para destacar pendencias, restricoes e validacao por WhatsApp antes de procedimentos sensiveis.
 Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do risco, horarios alternativos e mensagem pronta por WhatsApp para proteger a agenda do dia.
+Foi adicionado um painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao para a gestora.
 Foi adicionada uma area mockada de ofertas de renovacao de pacotes, com valor sugerido, argumento comercial, mensagem de WhatsApp e marcacao em memoria de proposta apresentada.
 
 Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
+- Persistir comissoes, produtividade e metas por profissional.
 - Persistir retornos recomendados e campanhas de reativacao.
 - Criar status operacional dos retornos recomendados para controlar contato enviado, retorno agendado e oportunidade perdida.
 - Persistir recuperacao de faltas, contato feito e reagendamento.
@@ -57,6 +59,7 @@ Implementar o primeiro fluxo operacional editavel:
 - status de acompanhamento para retornos acionados por WhatsApp
 - persistencia dos alertas de anamnese pre-atendimento
 - persistencia de risco de falta e tentativa de reagendamento
+- persistencia de comissoes, metas e produtividade
 - persistencia de ofertas de renovacao e aceite/recusa
 - regras de baixa de sessoes e agenda de retorno
 - migration inicial PostgreSQL quando o banco de desenvolvimento estiver definido
