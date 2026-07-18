@@ -62,12 +62,27 @@ export type AnamnesisAlertItem = {
   url: string;
 };
 
+export type NoShowRiskItem = {
+  id: string;
+  client: string;
+  appointmentTime: string;
+  procedure: string;
+  reason: string;
+  suggestedAction: string;
+  fallbackSlots: string[];
+  template: string;
+  url: string;
+  tone: "Alto" | "Medio";
+};
+
 export type WhatsAppQueueItem = {
   id: string;
   client: string;
   reason: string;
   template: string;
   url: string;
+  dueLabel: string;
+  priority: "Alta" | "Media";
 };
 
 export type RetentionCampaignItem = {
@@ -313,6 +328,37 @@ export const anamnesisAlertItems: AnamnesisAlertItem[] = [
   },
 ];
 
+export const noShowRiskItems: NoShowRiskItem[] = [
+  {
+    id: "ns-1",
+    client: "Renata Nogueira",
+    appointmentTime: "14:20",
+    procedure: "Depilacao a laser perna inteira",
+    reason: "Confirmacao pendente e historico de resposta lenta no mesmo dia.",
+    suggestedAction:
+      "Enviar confirmacao curta agora e oferecer troca para 16:30 se nao puder vir.",
+    fallbackSlots: ["16:30", "18:10"],
+    template:
+      "Oi, Renata! Seu horario das 14h20 segue reservado. Consegue confirmar? Se apertar para hoje, tenho 16h30 como alternativa.",
+    url: "https://wa.me/5511911111111",
+    tone: "Alto",
+  },
+  {
+    id: "ns-2",
+    client: "Aline Mota",
+    appointmentTime: "Sem horario ativo",
+    procedure: "Drenagem pos-operatoria",
+    reason: "Faltou na ultima sessao e ainda tem saldo de pacote parado.",
+    suggestedAction:
+      "Oferecer dois horarios de almoco e reforcar que o pacote continua reservado.",
+    fallbackSlots: ["12:10", "12:50"],
+    template:
+      "Oi, Aline! Para nao esfriar seu resultado, separei 12h10 ou 12h50 para retomar sua drenagem. Qual fica melhor?",
+    url: "https://wa.me/5511933333333",
+    tone: "Medio",
+  },
+];
+
 export const whatsAppQueueItems: WhatsAppQueueItem[] = [
   {
     id: "wa-1",
@@ -320,6 +366,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Confirmacao pendente de hoje",
     template: "Oi, Renata! Passando para confirmar seu horario das 14h20.",
     url: "https://wa.me/5511911111111",
+    dueLabel: "Enviar ate 13:20",
+    priority: "Alta",
   },
   {
     id: "wa-2",
@@ -327,6 +375,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Retorno de manutencao",
     template: "Oi, Paula! Ja podemos programar sua proxima manutencao.",
     url: "https://wa.me/5511922222222",
+    dueLabel: "Enviar hoje",
+    priority: "Media",
   },
   {
     id: "wa-3",
@@ -334,6 +384,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     reason: "Reagendamento apos falta",
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
+    dueLabel: "Enviar antes das 17:00",
+    priority: "Alta",
   },
 ];
 

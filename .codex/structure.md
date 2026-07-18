@@ -45,6 +45,7 @@ CRM Estetica Pro e um SaaS vertical para clinicas de estetica e studios de belez
 
 - Dashboard operacional inicial em portugues do Brasil.
 - Blocos para agenda, clientes em aquecimento, saude dos pacotes, retornos e fila de WhatsApp.
+- Fila de WhatsApp com prioridade, prazo de envio, contadores de pendencias e marcacao em memoria de contato enviado.
 - Dados mockados tipados para acelerar formularios e persistencia.
 
 ## Areas do sistema

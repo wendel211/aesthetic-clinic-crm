@@ -11,6 +11,7 @@ import {
   clientFocusItems,
   followUpItems,
   navigationItems,
+  noShowRiskItems,
   overviewMetrics,
   packageHealthItems,
   priorityItems,
@@ -61,12 +62,22 @@ const anamnesisStatusClassName: Record<
   Revisar: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
+const whatsAppPriorityClassName: Record<WhatsAppQueueItem["priority"], string> = {
+  Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
 const retentionToneClassName: Record<
   (typeof retentionCampaignItems)[number]["tone"],
   string
 > = {
   Alta: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
+};
+
+const noShowToneClassName: Record<(typeof noShowRiskItems)[number]["tone"], string> = {
+  Alto: "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]",
+  Medio: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
 type QuickFlowForm = {
@@ -155,6 +166,7 @@ export default function Home() {
     WhatsAppQueueItem[]
   >([]);
   const [completedClosingIds, setCompletedClosingIds] = useState<string[]>([]);
+  const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -170,6 +182,12 @@ export default function Home() {
   const completedClosingCount = completedClosingIds.length;
   const pendingClosingCount =
     attendanceClosingItems.length - completedClosingCount;
+  const pendingWhatsAppCount = whatsAppQueueList.filter(
+    (item) => !sentWhatsAppIds.includes(item.id),
+  ).length;
+  const highPriorityWhatsAppCount = whatsAppQueueList.filter(
+    (item) => item.priority === "Alta" && !sentWhatsAppIds.includes(item.id),
+  ).length;
   const quickFlowTemplate = buildConfirmationTemplate({
     client: quickFlowForm.client,
     procedure: quickFlowForm.procedure,
@@ -239,6 +257,8 @@ export default function Home() {
               time: quickFlowForm.time,
             }),
           ),
+          dueLabel: "Enviar agora",
+          priority: "Alta",
         },
         ...current,
       ]);
@@ -251,6 +271,14 @@ export default function Home() {
     setCompletedClosingIds((current) =>
       current.includes(id)
         ? current.filter((completedId) => completedId !== id)
+        : [...current, id],
+    );
+  }
+
+  function toggleWhatsAppSent(id: string) {
+    setSentWhatsAppIds((current) =>
+      current.includes(id)
+        ? current.filter((sentId) => sentId !== id)
         : [...current, id],
     );
   }
@@ -816,6 +844,79 @@ export default function Home() {
                 </div>
               </section>
 
+              <section
+                id="faltas"
+                className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6"
+              >
+                <SectionHeading
+                  title="Risco de falta e reagendamento"
+                  description="Fila curta para proteger a agenda do dia: confirme quem esta em risco e ja ofereca um horario alternativo antes de perder receita."
+                />
+
+                <div className="mt-5 flex items-center justify-between rounded-[1.4rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] px-4 py-3">
+                  <span className="text-sm font-medium text-[var(--foreground)]">
+                    Acoes preventivas
+                  </span>
+                  <span className="font-mono text-sm text-[var(--muted)]">
+                    {noShowRiskItems.length} clientes em risco
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  {noShowRiskItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="rounded-[1.6rem] border border-[var(--line)] bg-[rgba(255,255,255,0.68)] p-4"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <h3 className="font-semibold tracking-[-0.02em]">
+                            {item.client}
+                          </h3>
+                          <p className="text-sm leading-6 text-[var(--muted)]">
+                            {item.appointmentTime} - {item.procedure}
+                          </p>
+                        </div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${noShowToneClassName[item.tone]}`}
+                        >
+                          Risco {item.tone.toLowerCase()}
+                        </span>
+                      </div>
+
+                      <div className="mt-4 space-y-2 text-sm leading-6">
+                        <p className="text-[var(--foreground)]">{item.reason}</p>
+                        <p className="text-[var(--muted)]">{item.suggestedAction}</p>
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {item.fallbackSlots.map((slot) => (
+                          <span
+                            key={slot}
+                            className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-xs font-medium text-[var(--foreground)]"
+                          >
+                            Alternativa {slot}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
+                        {item.template}
+                      </p>
+
+                      <a
+                        className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--accent-soft)]"
+                        href={item.url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Confirmar ou reagendar
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
               <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] backdrop-blur sm:p-6">
                 <SectionHeading
                   title="Fechamento de sessao"
@@ -897,31 +998,81 @@ export default function Home() {
                   <div className="animate-pulse-soft hidden h-3 w-3 rounded-full bg-[var(--accent)] sm:block" />
                 </div>
 
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Pendentes
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingWhatsAppCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Alta prioridade
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {highPriorityWhatsAppCount}
+                    </strong>
+                  </div>
+                </div>
+
                 <div className="mt-6 space-y-4">
-                  {whatsAppQueueList.map((item) => (
-                    <article
-                      key={item.id}
-                      className="rounded-[1.6rem] border border-[var(--line)] bg-white p-4"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-1">
-                          <h3 className="font-semibold tracking-[-0.02em]">{item.client}</h3>
-                          <p className="text-sm text-[var(--muted)]">{item.reason}</p>
+                  {whatsAppQueueList.map((item) => {
+                    const isSent = sentWhatsAppIds.includes(item.id);
+
+                    return (
+                      <article
+                        key={item.id}
+                        className={`rounded-[1.6rem] border p-4 transition-colors ${
+                          isSent
+                            ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : "border-[var(--line)] bg-white"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="font-semibold tracking-[-0.02em]">
+                                {item.client}
+                              </h3>
+                              <span
+                                className={`rounded-full px-3 py-1 text-xs font-medium ${whatsAppPriorityClassName[item.priority]}`}
+                              >
+                                {item.priority}
+                              </span>
+                            </div>
+                            <p className="text-sm text-[var(--muted)]">{item.reason}</p>
+                          </div>
+                          <a
+                            href={item.url}
+                            className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--accent-soft)]"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Abrir
+                          </a>
                         </div>
-                        <a
-                          href={item.url}
-                          className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--accent-soft)]"
-                          target="_blank"
-                          rel="noreferrer"
+                        <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">
+                          {item.dueLabel}
+                        </p>
+                        <p className="mt-3 text-sm leading-6 text-[var(--foreground)]">
+                          {item.template}
+                        </p>
+                        <button
+                          className={`mt-4 inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                            isSent
+                              ? "bg-[var(--success)] text-white"
+                              : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                          }`}
+                          onClick={() => toggleWhatsAppSent(item.id)}
+                          type="button"
                         >
-                          Abrir
-                        </a>
-                      </div>
-                      <p className="mt-4 text-sm leading-6 text-[var(--foreground)]">
-                        {item.template}
-                      </p>
-                    </article>
-                  ))}
+                          {isSent ? "Contato marcado como enviado" : "Marcar como enviado"}
+                        </button>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
 
