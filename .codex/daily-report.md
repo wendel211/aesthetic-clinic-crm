@@ -1,5 +1,36 @@
 # Relatorio Diario
 
+## 2026-07-20
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, memoria operacional e repositorio GitHub.
+- Escolhida melhoria incremental para fechar o ciclo comercial de renovacao de pacotes sem depender de banco real.
+- Adicionado controle em memoria de resultado das ofertas de renovacao, com estados de proposta apresentada, aguardando resposta, aceita e recusada.
+- Incluidos indicadores de propostas pendentes, aguardando resposta, aceitas, receita em aberto e receita aceita.
+- Mantidos os CTAs de WhatsApp e a proposta pronta para a recepcao, agora com botoes para registrar aceite ou recusa.
+- Criada branch `feat/resultado-renovacao` para publicar a entrega.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- Servidor local `npm run dev -- --hostname 127.0.0.1 --port 3000`
+- `Invoke-WebRequest http://127.0.0.1:3000` retornou HTTP 200 e confirmou os textos "Ofertas de renovacao", "Cliente aceitou" e "Receita aceita".
+
+### Observacoes
+
+- Nao foi usado Playwright conforme solicitacao da automacao.
+- `npm ci` reportou 5 vulnerabilidades moderadas herdadas; nao foi aplicado `npm audit fix --force` para evitar mudanca ampla de dependencias.
+- Uma tentativa de verificacao textual com `findstr` falhou por quoting do Windows depois de retornar HTTP 200; a checagem foi repetida com PowerShell e passou.
+
+### Proximo ciclo
+
+- Persistir ofertas de renovacao, resultado da proposta, valor aceito e motivo de recusa.
+- Conectar aceite de renovacao ao fechamento de sessao e ao controle real de pacotes.
+
 ## 2026-07-16
 
 ### Feito
