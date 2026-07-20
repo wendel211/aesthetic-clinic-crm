@@ -104,6 +104,7 @@
 - Retornos recomendados acionaveis com prioridade, janela sugerida, mensagem pronta, CTA de WhatsApp e marcacao em memoria de retorno agendado.
 - Painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao.
 - Ofertas de renovacao de pacotes em memoria, com valor sugerido, argumento comercial, proximo passo, mensagem de WhatsApp e marcacao de proposta apresentada.
+- Resultado de ofertas de renovacao em memoria, com aceite/recusa, propostas aguardando resposta, receita em aberto e receita aceita.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
 
 ## Proximas features comerciais
@@ -111,6 +112,7 @@
 - Persistir comissoes, produtividade e metas por profissional.
 - Persistir campanhas de reativacao e retornos recomendados.
 - Persistir ofertas de renovacao e resultado da negociacao.
+- Persistir historico de resultado das ofertas de renovacao, incluindo aceite, recusa, valor aceito e motivo de perda.
 - Lembrete de confirmacao por WhatsApp.
 - Acompanhamento de status dos retornos recomendados: pendente, enviado, agendado e perdido.
 - Persistir controle de faltas, reagendamento e contato feito.
