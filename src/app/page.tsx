@@ -78,6 +78,13 @@ const retentionToneClassName: Record<
   Media: "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]",
 };
 
+type CampaignOutcome = "respondida" | "retentar";
+
+const campaignOutcomeClassName: Record<CampaignOutcome, string> = {
+  respondida: "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]",
+  retentar: "border-[rgba(169,111,28,0.22)] bg-[rgba(169,111,28,0.08)]",
+};
+
 const followUpToneClassName: Record<
   (typeof followUpItems)[number]["tone"],
   string
@@ -207,6 +214,9 @@ export default function Home() {
   const [scheduledFollowUpIds, setScheduledFollowUpIds] = useState<string[]>([]);
   const [presentedRenewalIds, setPresentedRenewalIds] = useState<string[]>([]);
   const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
+  const [campaignOutcomes, setCampaignOutcomes] = useState<
+    Record<string, CampaignOutcome>
+  >({});
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -244,6 +254,12 @@ export default function Home() {
     .map((item) => Number(item.price.replace(/\D/g, "")))
     .reduce((total, value) => total + value, 0);
   const activatedCampaignCount = activatedCampaignIds.length;
+  const answeredCampaignCount = Object.values(campaignOutcomes).filter(
+    (outcome) => outcome === "respondida",
+  ).length;
+  const retryCampaignCount = Object.values(campaignOutcomes).filter(
+    (outcome) => outcome === "retentar",
+  ).length;
   const pendingCampaignCount =
     retentionCampaignItems.length - activatedCampaignCount;
   const highPriorityPendingCampaignCount = retentionCampaignItems.filter(
@@ -374,6 +390,22 @@ export default function Home() {
         ? current.filter((campaignId) => campaignId !== id)
         : [...current, id],
     );
+    setCampaignOutcomes((current) => {
+      if (!activatedCampaignIds.includes(id)) {
+        return current;
+      }
+
+      const remainingOutcomes = { ...current };
+      delete remainingOutcomes[id];
+      return remainingOutcomes;
+    });
+  }
+
+  function setRetentionCampaignOutcome(id: string, outcome: CampaignOutcome) {
+    setActivatedCampaignIds((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+    setCampaignOutcomes((current) => ({ ...current, [id]: outcome }));
   }
 
   return (
@@ -1497,7 +1529,7 @@ export default function Home() {
                   description="Carteira curta de clientes paradas ou em risco, com oferta objetiva para recuperar agenda e recorrencia pelo WhatsApp."
                 />
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
                       A acionar
@@ -1522,17 +1554,36 @@ export default function Home() {
                       {activatedCampaignCount}
                     </strong>
                   </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Com resposta
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {answeredCampaignCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Retentar
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {retryCampaignCount}
+                    </strong>
+                  </div>
                 </div>
 
                 <div className="mt-6 space-y-4">
                   {retentionCampaignItems.map((item) => {
                     const isActivated = activatedCampaignIds.includes(item.id);
+                    const outcome = campaignOutcomes[item.id];
 
                     return (
                       <article
                         key={item.id}
                         className={`rounded-[1.6rem] border p-4 transition-colors ${
-                          isActivated
+                          outcome
+                            ? campaignOutcomeClassName[outcome]
+                            : isActivated
                             ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
                             : "border-[var(--line)] bg-[rgba(255,255,255,0.68)]"
                         }`}
@@ -1558,6 +1609,13 @@ export default function Home() {
                             {item.revenueRisk}
                           </p>
                           <p className="text-[var(--muted)]">{item.offer}</p>
+                          <p className="text-[var(--muted)]">
+                            {outcome === "respondida"
+                              ? item.successAction
+                              : outcome === "retentar"
+                                ? item.nextAttempt
+                                : item.responseWindow}
+                          </p>
                           <p className="text-[var(--foreground)]">{item.template}</p>
                         </div>
 
@@ -1584,6 +1642,36 @@ export default function Home() {
                               : "Marcar como acionada"}
                           </button>
                         </div>
+                        {isActivated && (
+                          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                            <button
+                              className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                                outcome === "respondida"
+                                  ? "bg-[var(--success)] text-white"
+                                  : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[rgba(31,138,112,0.12)]"
+                              }`}
+                              onClick={() =>
+                                setRetentionCampaignOutcome(item.id, "respondida")
+                              }
+                              type="button"
+                            >
+                              Resposta recebida
+                            </button>
+                            <button
+                              className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                                outcome === "retentar"
+                                  ? "bg-[var(--warning)] text-white"
+                                  : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[rgba(169,111,28,0.12)]"
+                              }`}
+                              onClick={() =>
+                                setRetentionCampaignOutcome(item.id, "retentar")
+                              }
+                              type="button"
+                            >
+                              Agendar retentativa
+                            </button>
+                          </div>
+                        )}
                       </article>
                     );
                   })}

@@ -63,6 +63,7 @@
 - Criar migration inicial PostgreSQL a partir do schema Prisma.
 - Conectar os formularios da tela operacional ao Prisma.
 - Persistir ofertas de renovacao, proposta apresentada e aceite/recusa.
+- Persistir status de campanha de reativacao, resposta recebida e proxima tentativa.
 
 ## Arquitetura de dados
 
@@ -97,6 +98,7 @@
 - Central de confirmacao por WhatsApp em memoria com prioridade, prazo sugerido, contadores de pendencias e marcacao de contato enviado.
 - Central de campanhas de reativacao por WhatsApp com clientes paradas, risco de receita e oferta sugerida.
 - Controle em memoria de campanhas de reativacao acionadas, com contadores de pendencias, alta prioridade e contatos ja feitos.
+- Acompanhamento em memoria de campanhas de reativacao com resposta recebida, retentativa e proximo passo comercial.
 - Retornos recomendados com prioridade, oportunidade comercial, mensagem pronta e CTA direto para WhatsApp.
 - Fila de recuperacao de faltas e cancelamentos recentes, com impacto em pacote/receita, sugestao de encaixe, mensagem pronta e controle local de contato feito.
 - Alertas de anamnese pre-atendimento em memoria, com pendencia, restricao, orientacao e CTA de WhatsApp.
@@ -110,6 +112,7 @@
 
 - Persistir comissoes, produtividade e metas por profissional.
 - Persistir campanhas de reativacao e retornos recomendados.
+- Persistir status de campanha acionada, resposta recebida e proxima tentativa de reativacao.
 - Persistir ofertas de renovacao e resultado da negociacao.
 - Lembrete de confirmacao por WhatsApp.
 - Acompanhamento de status dos retornos recomendados: pendente, enviado, agendado e perdido.
@@ -123,7 +126,6 @@
 - Dashboard de faturamento, agenda e retorno.
 - Campanhas para clientes inativos.
 - Renovacao automatica de pacotes.
-- Persistir status de campanha acionada, resposta recebida e proxima tentativa de reativacao.
 - Persistir status de confirmacao enviada, resposta recebida e falta/reagendamento por agendamento.
 - Permissoes por perfil: dona, gestora, recepcao e profissional.
 

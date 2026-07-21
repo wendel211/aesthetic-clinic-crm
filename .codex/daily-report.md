@@ -1,5 +1,36 @@
 # Relatorio Diario
 
+## 2026-07-21
+
+### Feito
+
+- Avaliado o estado atual do projeto, backlog, estrutura, memoria operacional e repositorio GitHub.
+- Atualizada a base local para `origin/main`, que ja inclui a regua de renovacao mergeada.
+- Identificada a branch remota `feat/resultado-renovacao` ainda nao mergeada e evitada duplicacao desse escopo.
+- Escolhida melhoria incremental para acompanhar campanhas de reativacao depois do primeiro contato.
+- Adicionados campos mockados de janela de resposta, proxima tentativa e acao comercial quando a cliente responde.
+- Criados contadores em memoria para campanhas com resposta recebida e campanhas que precisam de retentativa.
+- Adicionadas acoes para marcar campanha como respondida ou agendar retentativa, mantendo o card e o proximo passo atualizados.
+- Criada branch `feat/status-reativacao` para publicar a entrega.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- `rg -n "Com resposta|Retentar|Aguardar resposta" .next src` confirmou os textos novos no HTML gerado pelo build.
+
+### Observacoes
+
+- `npm ci` reportou 7 vulnerabilidades em dependencias, sendo 5 moderadas e 2 altas; nao foi aplicado `npm audit fix --force` para evitar mudanca ampla fora do escopo.
+- A verificacao HTTP com dev server nao foi executada porque a politica do shell bloqueou `Start-Process`; nao foi usado Playwright conforme solicitado.
+
+### Proximo ciclo
+
+- Persistir status de campanhas de reativacao no Prisma, incluindo acionada, resposta recebida, retentativa e proxima tentativa.
+- Conectar respostas de campanha a criacao de retorno/agendamento quando houver persistencia real.
+
 ## 2026-07-16
 
 ### Feito
