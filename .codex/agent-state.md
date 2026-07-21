@@ -23,6 +23,7 @@ Foi adicionada a base inicial de persistencia com Prisma 7 e schema PostgreSQL m
 Foi adicionada uma central de confirmacao por WhatsApp em memoria, com prioridade, prazo sugerido, contadores de pendencias e botao para marcar contato enviado.
 Foi adicionada uma central de campanhas de reativacao por WhatsApp, ainda mockada, para priorizar clientes paradas ou em risco com oferta sugerida e link de contato.
 Foi adicionado controle em memoria para marcar campanhas de reativacao acionadas, com contadores de pendentes, alta prioridade e acionadas.
+Foi adicionado acompanhamento em memoria para campanhas de reativacao, com contadores de resposta recebida, retentativa e proximo passo comercial por cliente.
 Foi aprimorada a area de retornos recomendados com prioridade, oportunidade comercial, mensagem pronta e CTA de WhatsApp por cliente.
 Foi adicionada uma fila operacional de recuperacao de faltas, ainda mockada, para reagendar faltas/cancelamentos recentes com impacto em pacote, risco de receita, sugestao de encaixe e mensagem de WhatsApp.
 Foi adicionada uma secao operacional de alertas de anamnese pre-atendimento, ainda mockada, para destacar pendencias, restricoes e validacao por WhatsApp antes de procedimentos sensiveis.
@@ -35,6 +36,7 @@ Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
 - Persistir comissoes, produtividade e metas por profissional.
 - Persistir retornos recomendados e campanhas de reativacao.
+- Persistir status de campanha de reativacao: acionada, resposta recebida, retentativa e proximo passo.
 - Criar status operacional dos retornos recomendados para controlar contato enviado, retorno agendado e oportunidade perdida.
 - Persistir recuperacao de faltas, contato feito e reagendamento.
 - Persistir alertas de anamnese por cliente, procedimento e agendamento.

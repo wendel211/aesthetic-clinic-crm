@@ -125,6 +125,9 @@ export type RetentionCampaignItem = {
   daysWithoutVisit: number;
   revenueRisk: string;
   offer: string;
+  responseWindow: string;
+  nextAttempt: string;
+  successAction: string;
   template: string;
   url: string;
   tone: "Alta" | "Media";
@@ -536,6 +539,9 @@ export const retentionCampaignItems: RetentionCampaignItem[] = [
     daysWithoutVisit: 151,
     revenueRisk: "R$ 620 em manutencao prevista",
     offer: "Avaliacao de retorno com bonus de limpeza expressa.",
+    responseWindow: "Aguardar resposta ate amanha 10:00.",
+    nextAttempt: "Se nao responder, tentar audio curto com 2 opcoes de horario.",
+    successAction: "Com resposta, criar retorno de avaliacao e registrar origem WhatsApp.",
     template:
       "Oi, Paula! Notei que ja esta na janela da sua manutencao. Quer que eu separe uma avaliacao rapida esta semana?",
     url: "https://wa.me/5511922222222",
@@ -548,6 +554,9 @@ export const retentionCampaignItems: RetentionCampaignItem[] = [
     daysWithoutVisit: 34,
     revenueRisk: "4 sessoes de drenagem ainda em aberto",
     offer: "Dois horarios curtos no almoco para retomar o pacote.",
+    responseWindow: "Aguardar resposta por 4 horas.",
+    nextAttempt: "Se nao responder, reenviar com apenas um horario de encaixe.",
+    successAction: "Com resposta, reagendar sessao e manter alerta de pacote ativo.",
     template:
       "Oi, Aline! Tenho dois horarios praticos para voce retomar sua drenagem sem perder o ritmo do pacote. Posso te mandar?",
     url: "https://wa.me/5511933333333",
@@ -560,6 +569,9 @@ export const retentionCampaignItems: RetentionCampaignItem[] = [
     daysWithoutVisit: 22,
     revenueRisk: "Reter recorrencia corporal",
     offer: "Lembrete preventivo para manter intervalo ideal.",
+    responseWindow: "Aguardar resposta ate o fim do dia.",
+    nextAttempt: "Se nao responder, tentar novamente na proxima janela de manutencao.",
+    successAction: "Com resposta, reservar proxima sessao e retirar da fila de risco.",
     template:
       "Oi, Tatiane! Passando para manter seu intervalo certinho. Quer deixar sua proxima sessao reservada?",
     url: "https://wa.me/5511944444444",
