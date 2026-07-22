@@ -207,6 +207,7 @@ export default function Home() {
   const [scheduledFollowUpIds, setScheduledFollowUpIds] = useState<string[]>([]);
   const [presentedRenewalIds, setPresentedRenewalIds] = useState<string[]>([]);
   const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
+  const [repliedWhatsAppIds, setRepliedWhatsAppIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
     [createdAppointments],
@@ -237,6 +238,11 @@ export default function Home() {
   const highPriorityWhatsAppCount = whatsAppQueueList.filter(
     (item) => item.priority === "Alta" && !sentWhatsAppIds.includes(item.id),
   ).length;
+  const awaitingWhatsAppReplyCount = whatsAppQueueList.filter(
+    (item) =>
+      sentWhatsAppIds.includes(item.id) && !repliedWhatsAppIds.includes(item.id),
+  ).length;
+  const repliedWhatsAppCount = repliedWhatsAppIds.length;
   const pendingRenewalOfferCount =
     renewalOfferItems.length - presentedRenewalIds.length;
   const renewalPipelineValue = renewalOfferItems
@@ -319,6 +325,9 @@ export default function Home() {
             }),
           ),
           dueLabel: "Enviar agora",
+          responseWindow: `Aguardar resposta ate ${quickFlowForm.time}`,
+          nextStep:
+            "Se confirmar, manter horario; se nao responder, oferecer remarcacao curta.",
           priority: "Alta",
         },
         ...current,
@@ -348,6 +357,20 @@ export default function Home() {
     setSentWhatsAppIds((current) =>
       current.includes(id)
         ? current.filter((sentId) => sentId !== id)
+        : [...current, id],
+    );
+    setRepliedWhatsAppIds((current) =>
+      current.includes(id) ? current.filter((replyId) => replyId !== id) : current,
+    );
+  }
+
+  function toggleWhatsAppReply(id: string) {
+    setSentWhatsAppIds((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+    setRepliedWhatsAppIds((current) =>
+      current.includes(id)
+        ? current.filter((replyId) => replyId !== id)
         : [...current, id],
     );
   }
@@ -1413,7 +1436,7 @@ export default function Home() {
                   <div className="animate-pulse-soft hidden h-3 w-3 rounded-full bg-[var(--accent)] sm:block" />
                 </div>
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
                       Pendentes
@@ -1430,19 +1453,43 @@ export default function Home() {
                       {highPriorityWhatsAppCount}
                     </strong>
                   </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Aguardando resposta
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {awaitingWhatsAppReplyCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Respostas recebidas
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {repliedWhatsAppCount}
+                    </strong>
+                  </div>
                 </div>
 
                 <div className="mt-6 space-y-4">
                   {whatsAppQueueList.map((item) => {
                     const isSent = sentWhatsAppIds.includes(item.id);
+                    const hasReply = repliedWhatsAppIds.includes(item.id);
+                    const statusLabel = hasReply
+                      ? "Resposta recebida"
+                      : isSent
+                        ? "Aguardando resposta"
+                        : "Envio pendente";
 
                     return (
                       <article
                         key={item.id}
                         className={`rounded-[1.6rem] border p-4 transition-colors ${
-                          isSent
+                          hasReply
                             ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
-                            : "border-[var(--line)] bg-white"
+                            : isSent
+                              ? "border-[rgba(169,111,28,0.24)] bg-[rgba(169,111,28,0.08)]"
+                              : "border-[var(--line)] bg-white"
                         }`}
                       >
                         <div className="flex items-start justify-between gap-4">
@@ -1455,6 +1502,17 @@ export default function Home() {
                                 className={`rounded-full px-3 py-1 text-xs font-medium ${whatsAppPriorityClassName[item.priority]}`}
                               >
                                 {item.priority}
+                              </span>
+                              <span
+                                className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                  hasReply
+                                    ? "bg-[rgba(31,138,112,0.14)] text-[var(--success)]"
+                                    : isSent
+                                      ? "bg-[rgba(169,111,28,0.12)] text-[var(--warning)]"
+                                      : "bg-[rgba(176,76,72,0.12)] text-[var(--danger)]"
+                                }`}
+                              >
+                                {statusLabel}
                               </span>
                             </div>
                             <p className="text-sm text-[var(--muted)]">{item.reason}</p>
@@ -1474,17 +1532,36 @@ export default function Home() {
                         <p className="mt-3 text-sm leading-6 text-[var(--foreground)]">
                           {item.template}
                         </p>
-                        <button
-                          className={`mt-4 inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                            isSent
-                              ? "bg-[var(--success)] text-white"
-                              : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
-                          }`}
-                          onClick={() => toggleWhatsAppSent(item.id)}
-                          type="button"
-                        >
-                          {isSent ? "Contato marcado como enviado" : "Marcar como enviado"}
-                        </button>
+                        <div className="mt-4 rounded-[1.2rem] border border-[var(--line)] bg-white/70 px-4 py-3 text-sm leading-6">
+                          <p className="font-medium text-[var(--foreground)]">
+                            {item.responseWindow}
+                          </p>
+                          <p className="text-[var(--muted)]">{item.nextStep}</p>
+                        </div>
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              isSent
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleWhatsAppSent(item.id)}
+                            type="button"
+                          >
+                            {isSent ? "Contato enviado" : "Marcar envio"}
+                          </button>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              hasReply
+                                ? "border border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)] text-[var(--success)]"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[var(--accent-soft)]"
+                            }`}
+                            onClick={() => toggleWhatsAppReply(item.id)}
+                            type="button"
+                          >
+                            {hasReply ? "Resposta registrada" : "Marcar resposta"}
+                          </button>
+                        </div>
                       </article>
                     );
                   })}

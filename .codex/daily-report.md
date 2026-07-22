@@ -1,5 +1,34 @@
 # Relatorio Diario
 
+## 2026-07-22
+
+### Feito
+
+- Avaliado o estado atual do projeto, AGENTS.md, backlog, estrutura, decisoes, memoria da automacao e repositorio GitHub.
+- Escolhida melhoria incremental para reduzir faltas e organizar follow-up da recepcao sem depender de banco real.
+- Adicionados campos de janela de resposta e proximo passo aos itens mockados da fila de WhatsApp.
+- Implementado acompanhamento em memoria para marcar contato enviado e resposta recebida.
+- Atualizada a fila de WhatsApp com contadores de pendentes, alta prioridade, aguardando resposta e respostas recebidas.
+- Criada branch `feat/status-confirmacao` para publicar a entrega.
+
+### Validacao
+
+- `npm ci`
+- `npm run lint`
+- `npm run prisma:validate`
+- `npm run build`
+- Playwright nao foi usado, conforme pedido.
+
+### Observacoes
+
+- `npm ci` reportou 10 vulnerabilidades em dependencias: 5 moderadas e 5 altas. Nao foi aplicado `npm audit fix` por estar fora do escopo do ciclo.
+- A primeira tentativa de lint/build falhou por erro de JSX na edicao da fila de WhatsApp; o erro foi corrigido e as validacoes passaram na repeticao.
+
+### Proximo ciclo
+
+- Persistir acompanhamento da fila de WhatsApp no Prisma, incluindo envio, resposta recebida, janela de resposta e proximo passo por contato.
+- Conectar respostas de confirmacao a status real de agendamento quando houver banco de desenvolvimento.
+
 ## 2026-07-16
 
 ### Feito

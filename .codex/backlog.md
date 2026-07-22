@@ -105,6 +105,7 @@
 - Painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao.
 - Ofertas de renovacao de pacotes em memoria, com valor sugerido, argumento comercial, proximo passo, mensagem de WhatsApp e marcacao de proposta apresentada.
 - Prisma 7 configurado com schema PostgreSQL multiempresa para empresas, usuarios, clientes, profissionais, procedimentos, pacotes, sessoes, agendamentos, anamnese, atendimentos, pagamentos e comissoes.
+- Fila de WhatsApp com acompanhamento em memoria de envio, resposta recebida, janela de resposta e proximo passo operacional.
 
 ## Proximas features comerciais
 
@@ -125,6 +126,7 @@
 - Renovacao automatica de pacotes.
 - Persistir status de campanha acionada, resposta recebida e proxima tentativa de reativacao.
 - Persistir status de confirmacao enviada, resposta recebida e falta/reagendamento por agendamento.
+- Persistir acompanhamento da fila de WhatsApp: envio, resposta recebida, janela de resposta e proximo passo.
 - Permissoes por perfil: dona, gestora, recepcao e profissional.
 
 ## Hipoteses de produto

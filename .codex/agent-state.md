@@ -30,6 +30,7 @@ Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do
 Foi adicionada acao operacional nos retornos recomendados, com prioridade, janela sugerida, mensagem pronta, CTA de WhatsApp e marcacao em memoria de retorno agendado.
 Foi adicionado um painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao para a gestora.
 Foi adicionada uma area mockada de ofertas de renovacao de pacotes, com valor sugerido, argumento comercial, mensagem de WhatsApp e marcacao em memoria de proposta apresentada.
+Foi adicionado acompanhamento em memoria na fila de WhatsApp para separar envio pendente, aguardando resposta e resposta recebida, com janela de resposta e proximo passo operacional.
 
 Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
@@ -44,6 +45,7 @@ Ainda pendente:
 - Conectar formularios e cards operacionais ao Prisma.
 - Persistir status de mensagens enviadas, respostas de confirmacao e reagendamentos.
 - Persistir status de campanha acionada, resposta recebida e nova tentativa de reativacao.
+- Persistir acompanhamento da fila de WhatsApp com envio, resposta recebida, janela de resposta e proximo passo por contato.
 - Configurar testes automatizados quando a primeira camada de regras estiver pronta.
 
 ## Preferencia atual de ciclo
@@ -56,6 +58,7 @@ Implementar o primeiro fluxo operacional editavel:
 - persistencia do cadastro rapido e fechamento de sessao
 - persistencia das campanhas de reativacao, retornos recomendados e recuperacao de faltas
 - persistencia da central de confirmacao por WhatsApp
+- persistencia do acompanhamento de respostas da fila de WhatsApp
 - persistencia das campanhas de reativacao e retornos recomendados
 - status de acompanhamento para retornos acionados por WhatsApp
 - persistencia dos alertas de anamnese pre-atendimento
