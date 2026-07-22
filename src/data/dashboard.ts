@@ -115,6 +115,8 @@ export type WhatsAppQueueItem = {
   template: string;
   url: string;
   dueLabel: string;
+  responseWindow: string;
+  nextStep: string;
   priority: "Alta" | "Media";
 };
 
@@ -496,6 +498,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     template: "Oi, Renata! Passando para confirmar seu horario das 14h20.",
     url: "https://wa.me/5511911111111",
     dueLabel: "Enviar ate 13:20",
+    responseWindow: "Aguardar resposta ate 13:50",
+    nextStep: "Se nao responder, ligar e oferecer troca para 16:30.",
     priority: "Alta",
   },
   {
@@ -505,6 +509,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     template: "Oi, Paula! Ja podemos programar sua proxima manutencao.",
     url: "https://wa.me/5511922222222",
     dueLabel: "Enviar hoje",
+    responseWindow: "Acompanhar resposta ate amanha cedo",
+    nextStep: "Se responder com interesse, sugerir avaliacao na terca 11:40.",
     priority: "Media",
   },
   {
@@ -514,6 +520,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
     template: "Separei dois horarios praticos para voce retomar o tratamento.",
     url: "https://wa.me/5511933333333",
     dueLabel: "Enviar antes das 17:00",
+    responseWindow: "Retentar em 2 horas se ficar sem retorno",
+    nextStep: "Oferecer 12:10 ou 12:50 e registrar preferencia de horario.",
     priority: "Alta",
   },
   {
@@ -524,6 +532,8 @@ export const whatsAppQueueItems: WhatsAppQueueItem[] = [
       "Para nao deixar seu pacote vencer, consigo te encaixar no horario de almoco esta semana.",
     url: "https://wa.me/5511911111111",
     dueLabel: "Enviar hoje",
+    responseWindow: "Aguardar confirmacao ainda hoje",
+    nextStep: "Se aceitar, bloquear encaixe no almoco e sinalizar pacote a vencer.",
     priority: "Alta",
   },
 ];
