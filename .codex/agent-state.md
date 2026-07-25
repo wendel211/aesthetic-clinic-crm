@@ -30,6 +30,7 @@ Foi adicionada uma fila mockada de risco de falta e reagendamento, com motivo do
 Foi adicionada acao operacional nos retornos recomendados, com prioridade, janela sugerida, mensagem pronta, CTA de WhatsApp e marcacao em memoria de retorno agendado.
 Foi adicionado um painel mockado de comissoes e produtividade por profissional, com producao do dia, repasse previsto, ocupacao, oportunidades de pacote e proxima acao para a gestora.
 Foi adicionada uma area mockada de ofertas de renovacao de pacotes, com valor sugerido, argumento comercial, mensagem de WhatsApp e marcacao em memoria de proposta apresentada.
+Foi adicionado controle em memoria do resultado das ofertas de renovacao, permitindo marcar aceite/recusa, acompanhar propostas aguardando resposta, receita em aberto e receita aceita.
 
 Ainda pendente:
 - Persistir o fluxo rapido e o fechamento de sessao em banco.
@@ -40,6 +41,7 @@ Ainda pendente:
 - Persistir alertas de anamnese por cliente, procedimento e agendamento.
 - Persistir risco de falta, tentativa de contato e reagendamento sugerido.
 - Persistir ofertas de renovacao, proposta apresentada e aceite/recusa da cliente.
+- Persistir motivo de recusa e valor aceito das ofertas de renovacao para medir conversao comercial.
 - Criar migrations quando houver `DATABASE_URL` real configurada.
 - Conectar formularios e cards operacionais ao Prisma.
 - Persistir status de mensagens enviadas, respostas de confirmacao e reagendamentos.

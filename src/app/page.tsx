@@ -126,6 +126,8 @@ type QuickFlowForm = {
   packageNote: string;
 };
 
+type RenewalOfferOutcome = "Aceita" | "Recusada";
+
 const initialQuickFlowForm: QuickFlowForm = {
   client: "",
   phone: "",
@@ -158,6 +160,10 @@ function buildWhatsAppUrl(phone: string, message: string) {
   }
 
   return `https://wa.me/55${digits}?text=${encodeURIComponent(message)}`;
+}
+
+function parseCurrencyValue(value: string) {
+  return Number(value.replace(/\D/g, ""));
 }
 
 function getDateLabel() {
@@ -206,6 +212,9 @@ export default function Home() {
   const [sentWhatsAppIds, setSentWhatsAppIds] = useState<string[]>([]);
   const [scheduledFollowUpIds, setScheduledFollowUpIds] = useState<string[]>([]);
   const [presentedRenewalIds, setPresentedRenewalIds] = useState<string[]>([]);
+  const [renewalOfferOutcomes, setRenewalOfferOutcomes] = useState<
+    Record<string, RenewalOfferOutcome>
+  >({});
   const [activatedCampaignIds, setActivatedCampaignIds] = useState<string[]>([]);
   const agendaList = useMemo(
     () => [...agendaItems, ...createdAppointments],
@@ -239,9 +248,20 @@ export default function Home() {
   ).length;
   const pendingRenewalOfferCount =
     renewalOfferItems.length - presentedRenewalIds.length;
+  const renewalOfferOutcomeItems = Object.entries(renewalOfferOutcomes);
+  const acceptedRenewalCount = renewalOfferOutcomeItems.filter(
+    ([, outcome]) => outcome === "Aceita",
+  ).length;
+  const pendingRenewalAnswerCount = presentedRenewalIds.filter(
+    (id) => !renewalOfferOutcomes[id],
+  ).length;
   const renewalPipelineValue = renewalOfferItems
-    .filter((item) => !presentedRenewalIds.includes(item.id))
-    .map((item) => Number(item.price.replace(/\D/g, "")))
+    .filter((item) => !renewalOfferOutcomes[item.id])
+    .map((item) => parseCurrencyValue(item.price))
+    .reduce((total, value) => total + value, 0);
+  const acceptedRenewalValue = renewalOfferItems
+    .filter((item) => renewalOfferOutcomes[item.id] === "Aceita")
+    .map((item) => parseCurrencyValue(item.price))
     .reduce((total, value) => total + value, 0);
   const activatedCampaignCount = activatedCampaignIds.length;
   const pendingCampaignCount =
@@ -366,6 +386,25 @@ export default function Home() {
         ? current.filter((presentedId) => presentedId !== id)
         : [...current, id],
     );
+    setRenewalOfferOutcomes((current) => {
+      if (!current[id]) {
+        return current;
+      }
+
+      const remainingOutcomes = { ...current };
+      delete remainingOutcomes[id];
+      return remainingOutcomes;
+    });
+  }
+
+  function setRenewalOutcome(id: string, outcome: RenewalOfferOutcome) {
+    setPresentedRenewalIds((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+    setRenewalOfferOutcomes((current) => ({
+      ...current,
+      [id]: outcome,
+    }));
   }
 
   function toggleRetentionCampaign(id: string) {
@@ -1065,13 +1104,29 @@ export default function Home() {
                   description="Propostas prontas para a recepcao apresentar antes da cliente sair, com argumento, valor e mensagem de apoio."
                 />
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                   <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
                       Propostas pendentes
                     </p>
                     <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
                       {pendingRenewalOfferCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Aguardando resposta
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {pendingRenewalAnswerCount}
+                    </strong>
+                  </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Aceitas
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {acceptedRenewalCount}
                     </strong>
                   </div>
                   <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
@@ -1085,18 +1140,34 @@ export default function Home() {
                       })}
                     </strong>
                   </div>
+                  <div className="rounded-[1.3rem] border border-[var(--line)] bg-white px-4 py-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Receita aceita
+                    </p>
+                    <strong className="mt-2 block text-2xl font-semibold tracking-[-0.05em]">
+                      {acceptedRenewalValue.toLocaleString("pt-BR", {
+                        currency: "BRL",
+                        style: "currency",
+                      })}
+                    </strong>
+                  </div>
                 </div>
 
                 <div className="mt-5 space-y-4">
                   {renewalOfferItems.map((item) => {
                     const isPresented = presentedRenewalIds.includes(item.id);
+                    const outcome = renewalOfferOutcomes[item.id];
 
                     return (
                       <article
                         key={item.id}
                         className={`rounded-[1.6rem] border p-4 transition-colors ${
-                          isPresented
+                          outcome === "Aceita"
                             ? "border-[rgba(31,138,112,0.24)] bg-[rgba(31,138,112,0.08)]"
+                            : outcome === "Recusada"
+                              ? "border-[rgba(176,76,72,0.18)] bg-[rgba(176,76,72,0.06)]"
+                              : isPresented
+                                ? "border-[rgba(169,111,28,0.22)] bg-[rgba(169,111,28,0.07)]"
                             : "border-[var(--line)] bg-white"
                         }`}
                       >
@@ -1115,6 +1186,13 @@ export default function Home() {
                             {item.tone} prioridade
                           </span>
                         </div>
+                        <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">
+                          {outcome
+                            ? `Resultado: ${outcome.toLowerCase()}`
+                            : isPresented
+                              ? "Aguardando resposta da cliente"
+                              : "Proposta ainda nao apresentada"}
+                        </p>
 
                         <div className="mt-4 rounded-[1.2rem] border border-[var(--line)] bg-[var(--surface)] px-4 py-3">
                           <p className="text-sm font-medium text-[var(--foreground)]">
@@ -1152,6 +1230,30 @@ export default function Home() {
                             {isPresented
                               ? "Proposta apresentada"
                               : "Marcar apresentada"}
+                          </button>
+                        </div>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              outcome === "Aceita"
+                                ? "bg-[var(--success)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[rgba(31,138,112,0.12)]"
+                            }`}
+                            onClick={() => setRenewalOutcome(item.id, "Aceita")}
+                            type="button"
+                          >
+                            Cliente aceitou
+                          </button>
+                          <button
+                            className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                              outcome === "Recusada"
+                                ? "bg-[var(--danger)] text-white"
+                                : "border border-[var(--line)] bg-white text-[var(--foreground)] hover:bg-[rgba(176,76,72,0.1)]"
+                            }`}
+                            onClick={() => setRenewalOutcome(item.id, "Recusada")}
+                            type="button"
+                          >
+                            Cliente recusou
                           </button>
                         </div>
                       </article>
