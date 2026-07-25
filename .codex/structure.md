@@ -47,6 +47,7 @@ CRM Estetica Pro e um SaaS vertical para clinicas de estetica e studios de belez
 - Blocos para agenda, clientes em aquecimento, saude dos pacotes, retornos e fila de WhatsApp.
 - Fila de WhatsApp com prioridade, prazo de envio, contadores de pendencias e marcacao em memoria de contato enviado.
 - Ofertas de renovacao de pacotes com valor sugerido, argumento comercial, mensagem de WhatsApp e marcacao em memoria de proposta apresentada.
+- Resultado em memoria das ofertas de renovacao, com aceite/recusa, aguardando resposta, receita em aberto e receita aceita.
 - Dados mockados tipados para acelerar formularios e persistencia.
 
 ## Areas do sistema
